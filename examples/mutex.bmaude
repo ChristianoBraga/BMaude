@@ -1,0 +1,48 @@
+--- A simple mutual exclusion protocol.
+(MACHINE MUTEX
+  VARIABLES p1 , p2
+  CONSTANTS idle , wait , crit
+  VALUES
+    p1 = 0 ; p2 = 0 ;
+    idle = 0 ; wait = 1 ; crit = 2
+  OPERATIONS
+    mutex =
+      WHILE true DO
+	  BEGIN
+            IF p1 == idle /\ p2 == idle THEN (p1 := wait OR p2 := wait) 
+            ELSE
+            IF p1 == idle /\ p2 == wait THEN p1 := wait OR p2 := crit
+	    ELSE
+	    IF p1 == idle /\ p2 == crit THEN p1 := wait OR p2 := idle 
+	    ELSE
+	    IF p1 == wait /\ p2 == idle THEN p1 := crit OR p2 := wait
+	    ELSE
+	    IF p1 == wait /\ p2 == wait THEN p1 := crit OR p2 := crit 
+	    ELSE
+	    IF p1 == wait /\ p2 == crit THEN p2 := idle 
+	    ELSE
+	    IF p1 == crit /\ p2 == idle THEN p1 := idle OR p2 := wait 
+	    ELSE 
+            IF p1 == crit /\ p2 == wait THEN p1 := idle 
+	   END END END END END END END END
+	  END
+END)
+
+(view)
+
+--- Simulation
+(say o Searching for a state where p1 is in critical section: search 1 mutex() where p1 = 2)
+(search 1 mutex() where p1 = 2)
+
+--- Safety
+(say o Searching for a state where both p1 and p2 are in critical section: search 1 mutex() where p1 = 2 and p2 = 2)
+(search 1 mutex() where p1 = 2 and p2 = 2)
+
+--- Safety
+(say o Model checking safety: mc mutex() |= [] ~ (p1(2) /\ p2(2)))
+(say \t - The initial state is given by the VALUES clause.)
+(mc mutex() |= [] ~ (p1(2) /\ p2(2)))
+
+--- Liveness
+(say o Model checking liveness: mc mutex() |= [] (p1(1) -> <> p1(2)))
+(mc mutex() |= [] (p1(1) -> <> p1(2)))

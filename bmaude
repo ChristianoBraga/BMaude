@@ -1,0 +1,20 @@
+#!/bin/bash
+
+MAUDE="/Users/cbraga/Applications/maudeAlpha115/maude-Yices2.darwin64"
+BMAUDE_DIR="/Users/cbraga/Dropbox/BMaude/generalized-smc/urucu-amarela/"
+
+if [ "$TERM_PROGRAM" = "iTerm.app" ] ;
+then
+  ./imgcat bmaude-terminal.jpg
+  if [ "$1" != "" ]; then
+     $MAUDE -no-banner $BMAUDE_DIR/bmaude-no-banner.maude "$1"
+  else
+     $MAUDE -no-banner $BMAUDE_DIR/bmaude-no-banner.maude
+  fi
+else
+  if [ "$1" != "" ]; then
+     $MAUDE -no-banner $BMAUDE_DIR/bmaude-banner.maude "$1"
+  else
+     $MAUDE -no-banner $BMAUDE_DIR/bmaude-banner.maude
+  fi
+fi

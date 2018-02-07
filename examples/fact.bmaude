@@ -1,0 +1,20 @@
+--- An imperative implementation of the factorial function
+(MACHINE FACT
+    VARIABLES y
+    VALUES
+          y = 1 
+    OPERATIONS
+          fact(x) = WHILE ~ (x == 0)
+                    DO
+                      BEGIN  
+		        y := y * x ;
+                        x := x - 1
+		      END ; print(y)
+END)
+
+(say o Executing fact(100/2))
+(exec fact(100/2))
+(say o Executing 3 steps of fact(100))
+(execn 3 fact(100/2))
+(say o Symbolically executing 3 steps of fact(R:Rat))
+(sexec 3 fact(R:Rat))

@@ -1,0 +1,18 @@
+(MACHINE FACT2
+   VARIABLES y
+   VALUES y = 1
+   OPERATIONS
+   fact(x) =
+     IF ~(x == 0)
+     THEN 
+       BEGIN
+	y := y * x ;
+	fact(x - 1) 
+       END
+     ELSE print(y)
+     END
+END)
+
+(view)
+(say o What the hell: let's execute fact(1000)!)
+(exec fact(1000))

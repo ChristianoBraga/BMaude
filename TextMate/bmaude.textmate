@@ -1,0 +1,19 @@
+{  scopeName = 'source.bmaude';
+ 2     fileTypes = (bmaude);
+ 3     foldingStartMarker = '(MACHINE';
+ 4     foldingStopMarker = 'END)';
+ 5     patterns = (
+ 6        {  name = 'keyword.control.untitled';
+ 7           match = '\b(if|while|for|return)\b';
+ 8        },
+ 9        {  name = 'string.quoted.double.untitled';
+10           begin = '"';
+11           end = '"';
+12           patterns = ( 
+13              {  name = 'constant.character.escape.untitled';
+14                 match = '\\.';
+15              }
+16           );
+17        },
+18     );
+19  }

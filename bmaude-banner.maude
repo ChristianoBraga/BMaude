@@ -1,0 +1,6 @@
+load bmaude.maude
+
+loop init .
+
+set show loop stats on .
+set show loop timing on .

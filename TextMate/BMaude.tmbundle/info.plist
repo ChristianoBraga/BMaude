@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>contactEmailRot13</key>
+	<string></string>
+	<key>contactName</key>
+	<string>Christiano Braga</string>
+	<key>description</key>
+	<string>Specification and validation in the B Maude language.</string>
+	<key>name</key>
+	<string>BMaude</string>
+	<key>uuid</key>
+	<string>32547D42-A6A6-4A54-9D25-49CC700F6E3B</string>
+</dict>
+</plist>
