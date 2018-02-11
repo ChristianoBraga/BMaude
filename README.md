@@ -11,4 +11,4 @@ Simply copy the files to your prefered folder and edit bmaude shell script to up
 
 ## Running the tool
 
-Type ./bmaude file.bmaude on the command line. 
+Type `./bmaude file.bmaude` on the command line. 
