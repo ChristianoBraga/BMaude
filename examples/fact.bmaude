@@ -11,7 +11,7 @@
                         x := x - 1
 		      END ; print(y)
 END)
-
+eof
 (say o Executing fact(100/2))
 (exec fact(100/2))
 (say o Executing 3 steps of fact(100))

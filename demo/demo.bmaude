@@ -1,0 +1,116 @@
+set show loop stats off .
+set show loop timing off .
+
+(version)
+
+(say \n Hi, \s welcome to the BMaude Prototype demo! \n)
+(say This demo is for version Uruçu-Amarela of February 2018.)
+(say Uruçu-amarela is a kind of bee common in the Rio de Janeiro area. \n)
+(say In this demo, \s we illustrate the subset of the Abstract Machine Notation
+currently supported by the tool and the avaiable verification techniques. )
+(say \t o A machine declares variables, constants, their values and operations. 
+An operation can be any composition of generalized substitutions.)
+(say \t o The verification techniques currently supported by BMaude are execution by rewriting, symbolic execution by narrowing, 
+state space search, and Linear Temporal Logic model checking. \n)
+(say So let us begin by loading a machine enconding the factorial
+function with a loop. \n)
+
+load ../examples/fact.bmaude
+(view)
+
+(say \n Now we can excute a call to factorial of 100, \s for instance, \s ... \n)
+set show loop stats on .
+set show loop timing on .
+(exec fact(100))
+set show loop stats off .
+set show loop timing off .
+
+(say \n ... some steps, say 3, of the same operation call... \n)
+set show loop stats on .
+set show loop timing on .
+(execn 3 fact(100))
+set show loop stats off .
+set show loop timing off .
+
+(say \n ... or symbolically execute some steps of a call to fact with 
+some rational number. \n)
+set show loop stats on .
+set show loop timing on .
+(sexec 3 fact(98 + R:Rat))
+set show loop stats off .
+set show loop timing off .
+
+(say \n We continue with a recursive implementation of the factorial function
+to further illustrate the efficiency of the tool. \n)
+
+load ../examples/fact2.bmaude
+(view)
+
+(say \n Let's call fact of 1000 and check its execution time. \n)
+set show loop stats on .
+set show loop timing on .
+(exec fact(1000))
+set show loop stats off .
+set show loop timing off .
+
+(say \n We have exercised execution by rewriting and symbolic execution by narrowing. 
+Let's play now with state search and LTL model checking. We will use a simple
+mutual exclusion protocol in this example. \n)
+
+load ../examples/mutex.bmaude
+(view)
+
+(say \n Let's first search for a state where process p1 is in the critical section. Note that the initial state is given by the VALUES declaration. In this example, the state space is induced by a call to operation mutex, but in general, it could be any substitution. \n)
+set show loop stats on .
+set show loop timing on .
+(search 1 mutex() where p1 = 2)
+set show loop stats off .
+set show loop timing off .
+
+(say \n We can also check for the safety property using search, that is, a state where neither p1 nor p2 are in the critical section. \n)
+set show loop stats on .
+set show loop timing on .
+(search 1 mutex() where p1 = 2 and p2 = 2)
+set show loop stats off .
+set show loop timing off .
+
+(say \n No such state exists therefore our specification is safe. \n)
+
+(say Let's check for liveness now. For that we will use Linear Temporal Logic model checking. We say that a process is live if it tries to enter the critical section then it will eventually will. The model checker then return a counter-example showing that there exists an infinite path where only process p2 enters the critical section. \n)
+set show loop stats on .
+set show loop timing on .
+(mc mutex() |= [](p1(1) -> <> p1(2)))
+set show loop stats off .
+set show loop timing off .
+
+(say Let's take a look now at another implementation of the mutex protocol that has the liveness property. \n)
+
+load ../examples/mutex2.bmaude
+(view)
+
+set show loop stats on .
+set show loop timing on .
+(mc mutex() |= [](p1(1) -> <> p1(2)))
+set show loop stats off .
+set show loop timing off .
+
+(say \n It also has safety... \n)
+set show loop stats on .
+set show loop timing on .
+(mc mutex() |= []~ (p1(2) /\ p2(2)))
+set show loop stats off .
+set show loop timing off .
+
+(say \n ... and strong liveness. \n)
+set show loop stats on .
+set show loop timing on .
+(mc mutex() |= ([]<> p1(1)) -> ([]<> p1(2)))
+set show loop stats off .
+set show loop timing off .
+
+(say \n Well, that is it for now. Let me conclude by saying that future work includes
+giving support to the complete Abstract Machine Notation, adding new verification techniques and refinement. \n)
+
+(say \r Thanks for watching! \o \n)
+
+quit
