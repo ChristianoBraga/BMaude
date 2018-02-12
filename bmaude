@@ -1,19 +1,37 @@
 #!/bin/bash
 
-MAUDE="/Users/cbraga/Applications/maudeAlpha115/maude-Yices2.darwin64"
-BMAUDE_DIR="/Users/cbraga/Dropbox/BMaude/generalized-smc/urucu-amarela/"
+MAUDE_ALPHA="/Users/cbraga/Applications/maudeAlpha115/maude-Yices2.darwin64"
+MAUDE_LMC="/Users/cbraga/Applications/maude-2-2.7-ltlr-lmc/maude.intelDarwin"
+BMAUDE_DIR_ALPHA="/Users/cbraga/Dropbox/BMaude/generalized-smc/urucu-amarela/BMaude/maude/alpha"
+BMAUDE_DIR_LMC="/Users/cbraga/Dropbox/BMaude/generalized-smc/urucu-amarela/BMaude/maude/lmc"
+
+if [ "$1" = "lmc" ];
+then
+     MAUDE="$MAUDE_LMC"
+     BMAUDE_DIR="$BMAUDE_DIR_LMC"
+else
+     if [ "$1" = "alpha" ];
+     then 
+          MAUDE="$MAUDE_ALPHA"
+          BMAUDE_DIR="$BMAUDE_DIR_ALPHA"
+     else
+	echo "BMaude Prototype - Uruçu-amarela Feb 2018"
+        echo "Use: bmaude (alpha | lmc) file.bmaude"
+	exit
+     fi
+fi
 
 if [ "$TERM_PROGRAM" = "iTerm.app" ] ;
 then
   ./imgcat bmaude-terminal.jpg
-  if [ "$1" != "" ]; then
-     $MAUDE -no-banner $BMAUDE_DIR/bmaude-no-banner.maude "$1"
+  if [ "$2" != "" ]; then
+     $MAUDE -no-banner $BMAUDE_DIR/bmaude-no-banner.maude "$2"
   else
      $MAUDE -no-banner $BMAUDE_DIR/bmaude-no-banner.maude
   fi
 else
-  if [ "$1" != "" ]; then
-     $MAUDE -no-banner $BMAUDE_DIR/bmaude-banner.maude "$1"
+  if [ "$2" != "" ]; then
+     $MAUDE -no-banner $BMAUDE_DIR/bmaude-banner.maude "$2"
   else
      $MAUDE -no-banner $BMAUDE_DIR/bmaude-banner.maude
   fi

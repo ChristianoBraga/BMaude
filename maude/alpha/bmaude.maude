@@ -658,7 +658,7 @@ endm
 load model-checker
 
 mod BPLC-MODEL-CHECKER is
-	ex BPLC .
+    ex BPLC .
     pr MODEL-CHECKER .
 
     subsort Conf < State .
@@ -825,7 +825,7 @@ mod GSL-TO-BPLC is
     eq compile(P:GSLPredicate | S:GSLSubstitution) =
 	if(compile(P:GSLPredicate), compile(S:GSLSubstitution), exit(rat(0))) .
 
-      --- Bounded choice
+    --- Bounded choice
     eq compile(S1:GSLSubstitution [] S2:GSLSubstitution) =
 	choice(compile(S1:GSLSubstitution), compile(S2:GSLSubstitution)) .
 
@@ -1888,15 +1888,15 @@ mod BMAUDE-COMMANDS is
     crl [mc] :
 	< mc S:GSLSubstitution T:Term ; M:AMNMachine ; QIL > =>
 	< idle ; M:AMNMachine ;
-      if (T:ResultPair? :: ResultPair) and
-	    (downTerm(getTerm(T:ResultPair?), error) :: ModelCheckResult)
- 	then printModelCheckResult(downTerm(getTerm(T:ResultPair?), error))	       
-	else 
-	  ('BMaude: '\r 'Error 'while 'model 'checking '\o
-	    printSubstitution(S:GSLSubstitution, 0) '|= 
-	    metaPrettyPrint(upModule('META-LEVEL, false), T:Term)) 
-	fi >
-      if T:ResultPair? :=
+          if (R:ResultPair? :: ResultPair) and
+	     (downTerm(getTerm(R:ResultPair?), error) :: ModelCheckResult)
+ 	  then printModelCheckResult(downTerm(getTerm(R:ResultPair?), error))	       
+	  else 
+	    ('BMaude: '\r 'Error 'while 'model 'checking '\o
+	      printSubstitution(S:GSLSubstitution, 0) '|= 
+	      metaPrettyPrint(upModule('META-LEVEL, false), T:Term)) 
+	  fi >
+      if R:ResultPair? :=
           metaReduce(makeMCModule(M:AMNMachine),
 	    '_`,_|=?_[upTerm(M:AMNMachine), upTerm(S:GSLSubstitution), T:Term]) .
     
