@@ -1,5 +1,5 @@
 # BMaude
-BMaude is a verification tool for B specifications written in the Abstract Machine Notation. The tool is implemented in the [Maude](http://maude.cs.uiuc.edu) language, by Christiano Braga <http://www.ic.uff.br/~cbraga>.
+BMaude is a verification tool for B specifications written in the Abstract Machine Notation. The tool is implemented in the [Maude](http://maude.cs.uiuc.edu) language, by Christiano Braga (<http://www.ic.uff.br/~cbraga>).
 
 ## System requirements
 * This version of BMaude requires Maude Alpha 115.
