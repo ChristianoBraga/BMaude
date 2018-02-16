@@ -23,7 +23,7 @@ For a demo, just run `./bmaude demo`.
 
 Narciso Martí-Oliet, Maurício Pires, Anamaria Moreira and David Deharbe gave invaluable contributions to this project.
 
-<div><font size=-3>Logo made with <a href="https://www.designevo.com/" title="Free Online Logo Maker">DesignEvo</a></font></div>
+<div>Logo made with <a href="https://www.designevo.com/" title="Free Online Logo Maker">DesignEvo</a>./div>
 
 
 
