@@ -1830,9 +1830,12 @@ mod BMAUDE-MODEL-CHECKER is
     
     op makeEqSet : AMNIdList -> EquationSet .
 
-    eq makeEqSet(bid(Q:Qid)) = (ceq '_|=_['S:State, Q:Qid['R:Rat]] =
-	'true.Bool if 'valueOf['bid[upTerm(Q:Qid)],'R:Rat,'S:State] =
-	'true.Bool [none] .) .
+    eq makeEqSet(bid(Q:Qid)) = 
+       (ceq '_|=_['S:State, Q:Qid['R:Rat]] = 'true.Bool if
+            'valueOf['bid[upTerm(Q:Qid)],'R:Rat,'S:State] = 'true.Bool [variant] . 
+        ceq '_|=_['S:State, Q:Qid['R:Rat]] = 'false.Bool if 
+            'valueOf['bid[upTerm(Q:Qid)],'R:Rat,'S:State] = 'false.Bool [variant] .) . 
+
 
     eq makeEqSet(I:GSLIdentifiers @, IL:AMNIdList) = 
    	makeEqSet(I:GSLIdentifiers) makeEqSet(IL:AMNIdList) .
@@ -2188,7 +2191,7 @@ mod BMAUDE-INTERFACE is
               fi,
             QIL'']
         else [nil, < idle ; M:Machine ; nil >,
-	    'BMaude: '\r 'Error 'while 'processing 'command '\o 'exec '\s QIL ]
+	    'BMaude: '\r 'Error 'while 'processing 'command '\o 'dexec '\s QIL ]
         fi
       if P:ResultPair? :=
 	  metaParse(upModule('AMN-GRAMMAR, false), QIL, 'SubstitutionDecl) .
@@ -2254,6 +2257,124 @@ set trace substitution off .
 set trace whole off .
 set trace body off .
 set trace builtin off .
-set print conceal off .
+set print conceal on .
 --- From BPLC
-print conceal abs prc if choice loop .
+print conceal abs prc if choice loop mod_is_sorts_._____endm .
+
+load narrowing.maude
+load lmc.maude
+
+mod META-SYMBOLIC-COND-CONNECTOR2+META-PROP-SET is 
+pr META-SYMBOLIC-COND-CONNECTOR2 .
+pr META-PROP-SET .
+endm
+
+mod BMAUDE-LMC-INTERFACE is 
+***(pr META-SYMBOLIC-COND-CONNECTOR2 .
+pr META-PROP-SET .
+pr META-LMC-COUNTEREXAMPLE-TRANSFORMER .
+)
+pr MODULE-HANDLING . --- From narrowing.
+pr BMAUDE-INTERFACE .
+ op procLMCExec : Term Term Condition Bool Bound Module -> QidList .
+ceq procLMCExec(T1:Term, T2:Term, CD:Condition, B:Bool, D:Bound, M:Module)
+    = if RP?:ResultPair? :: ResultPair
+      then getTerm(RP?:ResultPair?)
+      else 'Error
+      fi
+ if U:Module := addEqs(
+             (eq '##m##.Module = upTerm(M:Module) [none] .
+              eq '##f##.TermList = 'props[upTerm(M:Module),upTerm(T2:Term)] [none] .),
+             upModule('META-SYMBOLIC-COND-CONNECTOR2+META-PROP-SET, false)) /\
+      T3:Term  := upTerm(getTerm(metaReduce(M:Module,T1:Term))) /\
+      T4:Term := upTerm(getTerm(metaReduce(M:Module,T2:Term))) /\
+      RP?:ResultPair? := metaReduce(U:Module, 
+        'lmc-check[T3:Term,T4:Term,upTerm(CD:Condition),
+          upTerm(B:Bool),upTerm(D:Bound)]) .
+
+  op printLMCOutput : Module Term -> QidList .
+  eq printLMCOutput(M:Module, 
+     'result:_real:_bound:_complete:_[T1:Term,T2:Term,T3:Term,T4:Term])
+   = '\b 'result: '\o '\n '\s '\s
+     (if T1:Term == 'true.Bool then 
+        if T4:Term == 'true.Bool then
+          'true '\s '`( 'complete 'with 'depth 
+          metaPrettyPrint(upModule('NAT, false), T3:Term) '`)
+        else 
+          'no 'counterexample 'found 'within 'bound 
+          metaPrettyPrint(upModule('NAT, false), T3:Term)
+        fi
+      else 
+        if T2:Term == 'true.Bool then nil else 'possibly 'spurious fi
+        'counterexample 'found 'at 'depth  
+          metaPrettyPrint(upModule('NAT, false), T3:Term) '\n '\s '\s
+        printLMCCE(M:Module, T1:Term)
+      fi) '\n .
+
+  eq printLMCOutput(M:Module, T:Term)
+   = '\b 'error: '\o '\n '\s '\s
+     'model 'checker 'internal 'error '\n [owise] .
+
+  op printLMCCE : Module Term -> QidList .
+ ceq printLMCCE(M:Module, T:Term)
+   = metaPrettyPrint(M:Module, getTerm(RP:ResultPair))
+  if RP:ResultPair := 
+     metaReduce(upModule('META-LMC-COUNTEREXAMPLE-TRANSFORMER,false),
+                      'transRes[T:Term]) .
+  eq printLMCCE(M:Module, T:Term)
+   = 'invalid 'counterexample 'term [owise] .
+
+  ---op printLMCModelCheckResult : ModelCheckResult -> QidList .
+
+endm
+
+--- load rw.maude
+
+mod T is pr BMAUDE-LMC-INTERFACE . op errorMachine : -> [AMNMachine] . 
+
+op M : -> Term .
+eq M = 'MACHINE__END['bid[''RW.Sort],'__[
+    'VARIABLES_['_@`,_['bid[''r.Sort],'bid[''w.Sort]]],
+    'VALUES_['_;_['_@=_['bid[''r.Sort],'grat['N:Nat]],'_@=_['bid[''w.Sort],'grat['0.Zero]]]],
+    'OPERATIONS_[
+      '_=_['bid[''rw.Sort],
+        'WHILE_DO_['gboo['true.Bool],
+          'IF_THEN_ELSE_END['_/\_['_==_['bid[''r.Sort],'grat['0.Zero]],'_==_['bid[''w.Sort],'grat['0.Zero]]],
+             '_`[`]_['_@:=_['bid[''r.Sort],'grat['s_['0.Zero]]],'_@:=_['bid[''w.Sort],'grat['s_['0.Zero]]]],
+          'IF_THEN_ELSE_END['_/\_['~_['_==_['bid[''r.Sort],'grat['0.Zero]]],'_==_['bid[''w.Sort],'grat['0.Zero]]],
+             '_`[`]_['_@:=_['bid[''r.Sort],'_@+_['bid[''r.Sort],'grat['s_['0.Zero]]]],'_@:=_['bid[''r.Sort],'_-_['bid[''r.Sort],'grat['s_['0.Zero]]]]],
+          'IF_THEN_ELSE_END['_/\_['~_['_==_['bid[''w.Sort],'grat['0.Zero]]],'_==_['bid[''r.Sort],'grat['0.Zero]]],
+             '_@:=_['bid[''w.Sort],'_-_['bid[''w.Sort],'grat['s_['0.Zero]]]],
+          'IF_THEN_ELSE_END['_/\_['~_['_==_['bid[''r.Sort],'grat['0.Zero]]],'~_['_==_['bid[''w.Sort],'grat['0.Zero]]]],
+             '_`[`]_['_@:=_['bid[''r.Sort],'_-_['bid[''r.Sort],'grat['s_['0.Zero]]]],'_@:=_['bid[''w.Sort],'_-_['bid[''w.Sort],'grat['s_['0.Zero]]]]],'skip.GSLSubstitution]]]]
+        ]
+      ]
+    ]
+]] .
+endm
+
+eof
+
+red compile(downTerm(M, errorMachine)) .
+
+red printLMCOutput(upModule('META-SYMBOLIC-COND-CONNECTOR-BASE, true ), 
+ procLMCExec('run['_`(`)['bid[''rw.Sort]], M],
+             '`[`]_['_\/_['w['0.Nat],'w['s_['0.Nat]]]], nil, false, 10, 
+             makeMCModule(downTerm(M, errorMachine)))) .
+
+eof
+	  metaNarrow(upModule('BMAUDE, false),
+	    upTerm(run(S:GSLSubstitution, M:AMNMachine)),
+	    'C:Conf, '+, unbounded, N:Nat) .	
+
+         metaReduce(makeMCModule(M:AMNMachine),
+	    '_`,_|=?_[upTerm(M:AMNMachine), upTerm(S:GSLSubstitution), T:Term]) .
+
+red printLMCOutput(upModule('META-SYMBOLIC-COND-CONNECTOR-BASE, true ), 
+     procLMCExec('<_`,_>['N:Nat,'0.Nat], '`[`]_['one-writer-atmost?.Prop], nil, false, 10, upModule('READERS-WRITERS-PROPS, true ))) .
+
+red printLMCOutput(upModule('META-SYMBOLIC-COND-CONNECTOR-BASE, true ), 
+      procLMCExec('<_`,_>['N:Nat,'0.Nat], '<>_['~_['one-writer-atmost?.Prop]], nil, false, 10, upModule('READERS-WRITERS-PROPS, true ))) .
+
+
+
