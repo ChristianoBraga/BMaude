@@ -1,6 +1,7 @@
 <p align="center">
 <img src="./bmaude.jpg">
 </p>
+<div>Logo made with <a href="https://www.designevo.com/" title="Free Online Logo Maker">DesignEvo</a></div>
 
 # BMaude
 BMaude is a verification tool for B specifications written in the Abstract Machine Notation. The tool is implemented in the [Maude](http://maude.cs.uiuc.edu) language, by Christiano Braga (<http://www.ic.uff.br/~cbraga>).
