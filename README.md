@@ -1,4 +1,4 @@
-![Bmaude img](logo.jpg)
+![Bmaude img](logo.png)
 # BMaude
 BMaude is a verification tool for B specifications written in the Abstract Machine Notation. The tool is implemented in the [Maude](http://maude.cs.uiuc.edu) language, by Christiano Braga (<http://www.ic.uff.br/~cbraga>).
 
