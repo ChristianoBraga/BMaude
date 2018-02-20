@@ -1,0 +1,30 @@
+load symbolic-checker
+
+(MACHINE RW
+  VARIABLES r, w
+  VALUES r = N:Nat ; w = 0 
+  OPERATIONS
+      rw = WHILE true DO
+	   BEGIN
+		IF r == 0 /\ w == 0 
+		THEN BEGIN w := 1 OR r := 1 END
+                ELSE
+		IF ~(r == 0) /\ w == 0 
+		THEN BEGIN r := r + 1 OR r := r - 1 END
+                ELSE
+		IF r == 0 /\ ~(w == 0) 
+		THEN w := w - 1 
+		ELSE
+		IF ~(r == 0) /\ ~(w == 0) 
+		THEN BEGIN w := w - 1 OR r := r - 1 END
+		END END END END
+	   END 
+END)
+
+eof
+--- This loops...
+(mc rw() |= [] (w(0) \/ w(1)))
+--- One writer at most
+(lmc [10] rw(), (N:Nat, 0) |= [](w(0) \/ w(1))) 
+--- Exclusion: no counter example
+(lmc [10] rw(), (N:Nat, 0) |= [] (r(0) \/ w(0)))
