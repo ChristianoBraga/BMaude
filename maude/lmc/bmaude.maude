@@ -673,11 +673,13 @@ mod BPLC is
    	  ... >) = S:Storable .
 endm
 
-load model-checker
+--- load model-checker
+load narrowing
+load lmc
 
 mod BPLC-MODEL-CHECKER is
-	ex BPLC .
-    pr MODEL-CHECKER .
+    ex BPLC .
+    pr SYMBOLIC-CHECKER .
 
     subsort Conf < State .
     
@@ -689,10 +691,13 @@ mod BPLC-MODEL-CHECKER is
 	  < env : (I:Id |-> bind(L:Loc), E:Env) ,
 	  sto : (L:Loc |-> store(R:Rat), S:Store) ,
 	  ... >) = true .
+    eq valueOf(I:Id, R:Rat, C:Conf) = false [owise] .
+
     eq valueOf(I:Id, B:Bool,
 	  < env : (I:Id |-> bind(L:Loc), E:Env) ,
 	  sto : (L:Loc |-> store(B:Bool), S:Store) ,
 	  ... >) = true .
+    eq valueOf(I:Id, B:Bool, C:Conf) = false [owise] .
 endm
 
 -----------------------------------------------------------------------
@@ -864,7 +869,7 @@ mod GSL-TO-BPLC is
 	  S2:GSLSubstitution END) = if(compile(P:GSLPredicate),
 	  compile(S1:GSLSubstitution), compile(S2:GSLSubstitution)) .
 
-	--- While
+    --- While
     eq compile(WHILE P:GSLPredicate DO S:GSLSubstitution) =
 	loop(compile(P:GSLPredicate), compile(S:GSLSubstitution)) .
 
@@ -1057,8 +1062,8 @@ mod AMN-MODEL-CHECKER is
     eq valueOf(I:GSLIdentifiers, B:Bool, S:State) =
 	valueOf(compile(I:GSLIdentifiers), B:Bool, S:State) .
     op _,_|=?_ : AMNMachine GSLSubstitution Formula -> ModelCheckResult .
-    eq M:AMNMachine, S:GSLSubstitution |=? F:Formula =
-	modelCheck(run(S:GSLSubstitution, M:AMNMachine), F:Formula) .
+---    eq M:AMNMachine, S:GSLSubstitution |=? F:Formula =
+---	modelCheck(run(S:GSLSubstitution, M:AMNMachine), F:Formula) .
 endm
 
 --------------------
@@ -1774,7 +1779,7 @@ mod BMAUDE-PRINTING is
 	'\b 'State metaPrettyPrint(upModule('NAT, false), upTerm(N:Nat)) ': '\o '\n
 	printTraceStep(TS:TraceStep) '\n printTrace(T:Trace, (N:Nat + 1)) 
       if T:Trace =/= nil .
-    
+***(    
     op printTransitionList : TransitionList -> QidList .
     eq printTransitionList(nil) = (nil).QidList . 
     eq printTransitionList({C:Conf, R:RuleName}) = printConf(C:Conf) .
@@ -1792,7 +1797,7 @@ mod BMAUDE-PRINTING is
 	'\n printTransitionList(TL1:TransitionList)
    	'\n '\b 'Loop: '\o 
 	'\n printTransitionList(TL2:TransitionList) .	
-
+)
     op printValueStack : ValueStack -> QidList .
     eq printValueStack(evs) = '\b 'No 'output. '\o .
 
@@ -1818,35 +1823,56 @@ mod BMAUDE-PRINTING is
       if downTerm(T:Term, < noSemComp >) =/= < noSemComp > .
 endm
 
+mod BMAUDE-LMC-PRELUDE is            
+    protecting RUN-AMN .
+    protecting AMN-MODEL-CHECKER . 
+    protecting META-LEVEL .
+    protecting GSL-SYNTAX . 
+    pr RAT .
+endm
+ 
 mod BMAUDE-MODEL-CHECKER is
     pr AMN-MODEL-CHECKER .
     pr META-LEVEL .
     pr BMAUDE .
-    
+    pr QID .
+ 
     op makeOpDeclSet : AMNIdList -> OpDeclSet .
     eq makeOpDeclSet(bid(Q:Qid)) = (op Q:Qid : 'Rat -> 'Prop [none] .) .
     eq makeOpDeclSet(I:GSLIdentifiers @, IL:AMNIdList) = 
 	makeOpDeclSet(I:GSLIdentifiers) makeOpDeclSet(IL:AMNIdList) .
     
     op makeEqSet : AMNIdList -> EquationSet .
+    eq makeEqSet(bid(Q:Qid)) = 
+       (eq '_|=_['S:State, Q:Qid['R:Rat]] = 
+           'valueOf['bid[upTerm(Q:Qid)],'R:Rat,'S:State] [variant] .) . 
+ 
+***(
+'<_>['_`,_['_:_['env.EnvAttrib,'_`,_[
+                '_|->_['gid['bid[upTerm(Q:Qid)]], 'bind['loc[T:Term]]], 
+                TL1:TermList]],
+           '_:_['sto.StoreAttrib,'_`,_[
+                '_|->_['loc[T:Term],'store[T':Term]],
+                TL2:TermList]], TL3:TermList]]
 
     eq makeEqSet(bid(Q:Qid)) = 
        (ceq '_|=_['S:State, Q:Qid['R:Rat]] = 'true.Bool if
             'valueOf['bid[upTerm(Q:Qid)],'R:Rat,'S:State] = 'true.Bool [variant] . 
         ceq '_|=_['S:State, Q:Qid['R:Rat]] = 'false.Bool if 
             'valueOf['bid[upTerm(Q:Qid)],'R:Rat,'S:State] = 'false.Bool [variant] .) . 
-
+)
 
     eq makeEqSet(I:GSLIdentifiers @, IL:AMNIdList) = 
    	makeEqSet(I:GSLIdentifiers) makeEqSet(IL:AMNIdList) .
     
-    op makeMCModule : AMNMachine -> SModule .
+    op makeMCModule : AMNMachine -> SModule [memo] .
     eq makeMCModule(MACHINE bid(Q:Qid) (VARIABLES I:AMNIdList) C:AMNClauses END) =
        (mod qid("MODEL-CHECK-" + string(Q:Qid)) is 
             protecting 'RUN-AMN .
             protecting 'AMN-MODEL-CHECKER . 
             protecting 'META-LEVEL .
-            protecting 'GSL-SYNTAX . 
+            protecting 'GSL-SYNTAX .
+	    protecting 'RAT . 
             sorts none .
             none --- SubsortDeclSet
             --- op 'bid : 'Qid -> 'GSLIdentifiers [none] .
@@ -1854,6 +1880,22 @@ mod BMAUDE-MODEL-CHECKER is
             none --- MembAxSet
             makeEqSet(I:AMNIdList)
             none endm) .
+
+
+***(    ceq makeMCModule(MACHINE bid(Q:Qid) (VARIABLES I:AMNIdList) C:AMNClauses END) =
+       (mod qid("MODEL-CHECK-" + string(Q:Qid)) is 
+            nil
+	    sorts getSorts(M:SModule) .
+            (getSubsorts(M:SModule)) 
+            (getOps(M:SModule) 
+              makeOpDeclSet(I:AMNIdList))
+            (getMbs(M:SModule))
+            (getEqs(M:SModule)
+              makeEqSet(I:AMNIdList))
+            (getRls(M:SModule))
+        endm)
+    if M:SModule := upModule('BMAUDE-LMC-PRELUDE, true) .
+)
 endm
 
 mod BMAUDE-COMMANDS is
@@ -1905,7 +1947,7 @@ mod BMAUDE-COMMANDS is
 	  metaSearch(upModule('BMAUDE, false),
 	    upTerm(run(S:GSLSubstitution, M:AMNMachine)), 
 	    'C:Conf, C:Condition, '*, unbounded, N:Nat) .
-    
+***(    
     crl [mc] :
 	< mc S:GSLSubstitution T:Term ; M:AMNMachine ; QIL > =>
 	< idle ; M:AMNMachine ;
@@ -1935,7 +1977,7 @@ mod BMAUDE-COMMANDS is
       if T:ResultPair? :=
           metaReduce(makeMCModule(M:AMNMachine),
 	    '_`,_|=?_[upTerm(M:AMNMachine), upTerm(S:GSLSubstitution), T:Term]) .
-    
+    )
 
     crl [exec-unbounded] :
 	< exec S:GSLSubstitution ; M:AMNMachine ; QIL > =>
@@ -2261,8 +2303,8 @@ set print conceal on .
 --- From BPLC
 print conceal abs prc if choice loop mod_is_sorts_._____endm .
 
-load narrowing.maude
-load lmc.maude
+--- load narrowing.maude
+--- load lmc.maude
 
 mod META-SYMBOLIC-COND-CONNECTOR2+META-PROP-SET is 
 pr META-SYMBOLIC-COND-CONNECTOR2 .
@@ -2353,13 +2395,54 @@ eq M = 'MACHINE__END['bid[''RW.Sort],'__[
 ]] .
 endm
 
+red printLMCOutput(upModule('META-SYMBOLIC-COND-CONNECTOR-BASE, true ),
+             procLMCExec('run['_`(`)['bid[''rw.Sort]], M],
+             'true.Bool, nil, false, unbounded, 
+             makeMCModule(downTerm(M, errorMachine)))) .
+
+
+
+--- result: no counterexample
+--- (lmc [10] < N:Nat, 0 > |= [] one-writer-atmost? .)
+
+red printLMCOutput(upModule('META-SYMBOLIC-COND-CONNECTOR-BASE, true ),
+             procLMCExec('run['_`(`)['bid[''rw.Sort]], M],
+             '`[`]_['_\/_['w['s_['0.Nat]],'w['0.Nat]]], nil, false, 10, 
+             makeMCModule(downTerm(M, errorMachine)))) .
+
+--- result: true
+--- (lfmc < N:Nat, 0 > |= [] one-writer-atmost? .)
+
+red printLMCOutput(upModule('META-SYMBOLIC-COND-CONNECTOR-BASE, true ),
+             procLMCExec('run['_`(`)['bid[''rw.Sort]], M],
+             '`[`]_['_\/_['w['s_['0.Nat]],'w['0.Nat]]], nil, true, unbounded, 
+             makeMCModule(downTerm(M, errorMachine)))) .
+
+
 eof
 
-red compile(downTerm(M, errorMachine)) .
+--- red compile(downTerm(M, errorMachine)) .
+
+red printConf(downTerm(getTerm(metaRewrite(makeMCModule(downTerm(M, errorMachine)), 'run['_`(`)['bid[''rw.Sort]], M], 10)), < noSemComp >)) .
+
+--- Module Term Term Condition Qid Bound Nat
+red printConf(downTerm(getTerm(metaSearch(makeMCModule(downTerm(M, errorMachine)), 'run['_`(`)['bid[''rw.Sort]], M], 'C:Conf, '_|=_['C:Conf, 'w['s_['0.Nat]]] = 'true.Bool, '+, 5, 1)), < noSemComp >)) .
+
+eof
+
+red printConf(downTerm(getTerm(metaSearch(makeMCModule(downTerm(M, errorMachine)), 'run['_`(`)['bid[''rw.Sort]], M], 'C:Conf, '_|=_['C:Conf, 'r['0.Nat]] = 'true.Bool, '+, 1, 1)), < noSemComp >))  .
+
+eof
+
+red printLMCOutput(upModule('META-SYMBOLIC-COND-CONNECTOR-BASE, true ),
+             procLMCExec('run['_`(`)['bid[''rw.Sort]], M],
+             '`[`]_['_\/_['w['s_['0.Nat]],'w['0.Nat]]], nil, false, unbounded, 
+             makeMCModule(downTerm(M, errorMachine)))) .
+
 
 red printLMCOutput(upModule('META-SYMBOLIC-COND-CONNECTOR-BASE, true ), 
  procLMCExec('run['_`(`)['bid[''rw.Sort]], M],
-             '`[`]_['_\/_['w['0.Nat],'w['s_['0.Nat]]]], nil, false, 10, 
+             '`[`]_['_\/_['w['0.Nat],'w['s_['0.Nat]]]], nil, true, 10, 
              makeMCModule(downTerm(M, errorMachine)))) .
 
 eof
@@ -2369,6 +2452,11 @@ eof
 
          metaReduce(makeMCModule(M:AMNMachine),
 	    '_`,_|=?_[upTerm(M:AMNMachine), upTerm(S:GSLSubstitution), T:Term]) .
+
+select T .
+
+red printLMCOutput(upModule('META-SYMBOLIC-COND-CONNECTOR-BASE, true ),
+     procLMCExec('<_`,_>['N:Nat,'0.Nat], '`[`]_['_\/_['w['0.Nat],'w['s['0.Nat]]]], nil, false, 10, upModule('READERS-WRITERS-PROPS, true ))) .
 
 red printLMCOutput(upModule('META-SYMBOLIC-COND-CONNECTOR-BASE, true ), 
      procLMCExec('<_`,_>['N:Nat,'0.Nat], '`[`]_['one-writer-atmost?.Prop], nil, false, 10, upModule('READERS-WRITERS-PROPS, true ))) .
