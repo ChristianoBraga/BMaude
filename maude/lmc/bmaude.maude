@@ -1829,6 +1829,7 @@ mod BMAUDE-LMC-PRELUDE is
     protecting META-LEVEL .
     protecting GSL-SYNTAX . 
     pr RAT .
+    pr SYMBOLIC-CHECKER .
 endm
  
 mod BMAUDE-MODEL-CHECKER is
