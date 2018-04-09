@@ -2401,8 +2401,6 @@ red printLMCOutput(upModule('META-SYMBOLIC-COND-CONNECTOR-BASE, true ),
              'true.Bool, nil, false, unbounded, 
              makeMCModule(downTerm(M, errorMachine)))) .
 
-
-
 --- result: no counterexample
 --- (lmc [10] < N:Nat, 0 > |= [] one-writer-atmost? .)
 
