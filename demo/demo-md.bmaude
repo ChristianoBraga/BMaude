@@ -1,0 +1,192 @@
+set show loop stats off .
+set show loop timing off .
+
+(say % BMaude)
+(say % Christiano Braga)
+(say % \today \n)
+
+(say # \n ![](bmaude.jpg) { width=35% } \n \n)
+(say * Presentation automatically generated with BMaude and \s [Pandoc](http://pandoc.org/):)
+(say \n \n ~~~ {.latex})
+(say beamer: ./bmaude demo-md | sed '1d' | pandoc --highlight-style=kate -H doc/make-code-scriptsize.tex --wrap=preserve -V theme:metropolis -V logo:bmaude.jpg -V institute:"Universidade Federal Fluminense" -V address:"http://www.ic.uff.br/~cbraga" -fmarkdown-implicit_figures -t beamer -o doc/bmaude-demo.pdf)
+(say epub: ./bmaude demo-md | sed '1d' | pandoc --highlight-style=tango -H doc/make-code-scriptsize.tex -V theme:metropolis -V logo:bmaude.jpg -V institute:"Universidade Federal Fluminense" -V address:"http://www.ic.uff.br/~cbraga" -fmarkdown-implicit_figures -o doc/bmaude-demo.epub)
+(say ~~~ \n \n)
+
+
+(say # Welcome! \n  Hi, \s welcome to the BMaude Prototype presentation! \n)
+(say * This demo is for version)
+(version)
+(say \n \s \s \s \s - Uruçu-amarela is a kind of bee common in the Rio de Janeiro area. \n)
+
+(say * In this presentation, \s we illustrate the subset of the
+Abstract Machine Notation currently supported by the tool and the
+available verification techniques. \n)
+(say * A machine declares variables,\s constants, their values and operations. 
+An operation can be any composition of generalized substitutions.)
+(say * The verification techniques currently supported by BMaude are
+execution by rewriting,\s symbolic execution by narrowing,\s state space
+search,\s and Linear Temporal Logic model checking. \n)
+
+(say # Iterative factorial example {.fragile} \n)
+(say * So let us begin by loading a machine enconding the factorial function with a loop. \n)
+
+(say \n \n ~~~ {.latex})
+load ../examples/fact.bmaude
+(view)
+(say ~~~ \n \n)
+
+(say # Iterative factorial example \s (cont.) \n)
+(say * Now we can execute a call to factorial of 100, \s for instance, \s ... \n)
+
+(say \n \n ~~~ {.latex})
+(say exec fact(100))
+set show loop stats on .
+set show loop timing on .
+(exec fact(100))
+set show loop stats off .
+set show loop timing off .
+(say ~~~ \n \n)
+
+(say # Iterative factorial example \s (cont.) \n)
+(say * ... some steps,\s say 3,\s of the same operation call... \n)
+
+(say \n \n ~~~ {.latex})
+(say execn 3 fact(100))
+set show loop stats on .
+set show loop timing on .
+(execn 3 fact(100))
+set show loop stats off .
+set show loop timing off .
+(say ~~~ \n \n)
+
+(say # Iterative factorial example \s (cont.) \n)
+(say * ... or symbolically execute some steps of a call to fact with 
+some rational number. \n)
+
+(say \n \n ~~~ {.latex})
+(say sexec 3 fact(98 + R:Rat))
+set show loop stats on .
+set show loop timing on .
+(sexec 3 fact(98 + R:Rat))
+set show loop stats off .
+set show loop timing off .
+(say ~~~ \n \n)
+
+(say # Recursive factorial example \n)
+(say * We continue with a recursive implementation of the factorial function
+to further illustrate the efficiency of the tool. \n)
+
+(say \n \n ~~~ {.latex})
+load ../examples/fact2.bmaude
+(view)
+(say ~~~ \n \n)
+
+(say # Recursive factorial example \s (cont.)\n)
+(say * Let's call fact of 1000 and check its execution time. \n)
+
+(say \n \n ~~~ {.latex})
+(say exec fact(1000))
+set show loop stats on .
+set show loop timing on .
+(exec fact(1000))
+set show loop stats off .
+set show loop timing off .
+(say ~~~ \n \n)
+
+(say # Model checking {.allowframebreaks} \n)
+(say * We have exercised execution by rewriting and symbolic execution by narrowing.)
+(say * Let's play now with state search and LTL model checking. We will use a simple 
+mutual exclusion protocol in this example. \n)
+
+(say \n \n ~~~ {.latex})
+load ../examples/mutex.bmaude
+(view)
+(say ~~~ \n \n)
+
+(say # Model checking \s (cont.) {.allowframebreaks} \n)
+(say * Let's first search for a state where process p1 is in the critical section.)
+(say * Note that the initial state is given by the VALUES declaration.)
+(say * In this example, the state space is induced by a call to operation mutex, but in general, it could be any substitution. \n)
+
+(say \n \n ~~~ {.latex})
+(say search 1 mutex() \s where p1 = 2)
+set show loop stats on .
+set show loop timing on .
+(search 1 mutex() where p1 = 2)
+set show loop stats off .
+set show loop timing off .
+(say ~~~ \n \n)
+
+(say # Model checking \s (cont.) {.allowframebreaks} \n)
+(say * We can also check for the safety property using search, that is, a state where neither p1 nor p2 are in the critical section. \n)
+(say * No such state exists therefore our specification is safe. \n)
+(say \n \n ~~~ {.latex})
+(say search 1 mutex() where p1 = 2 and p2 = 2)
+set show loop stats on .
+set show loop timing on .
+(search 1 mutex() where p1 = 2 and p2 = 2)
+set show loop stats off .
+set show loop timing off .
+(say ~~~ \n \n)
+
+(say # Model checking \s (cont.) {.allowframebreaks} \n)
+(say * Let's check for liveness now.)
+(say * For that we will use Linear Temporal Logic model checking.)
+(say * We say that a process is live if it tries to enter the critical section then it will eventually will.)
+(say * The model checker then returns a counter-example showing that there exists an infinite path where only
+       process p2 enters the critical section. \n)
+(say \n \n ~~~ {.latex})
+(say mc mutex() |= [](p1(1) -> <> p1(2)))
+set show loop stats on .
+set show loop timing on .
+(mc mutex() |= [](p1(1) -> <> p1(2)))
+set show loop stats off .
+set show loop timing off .
+(say ~~~ \n \n)
+
+(say # Model checking \s (cont.) {.allowframebreaks} \n)
+(say * Let's take a look now at another implementation of the mutex protocol that has the liveness property. \n)
+(say \n \n ~~~ {.latex})
+load ../examples/mutex2.bmaude
+(view)
+(say ~~~ \n \n )
+(say # Model checking \s (cont.)\n)
+(say \n \n ~~~ {.latex})
+(say  mc mutex() |= [](p1(1) -> <> p1(2)))
+set show loop stats on .
+set show loop timing on .
+(mc mutex() |= [](p1(1) -> <> p1(2)))
+set show loop stats off .
+set show loop timing off .
+(say \n \n ~~~)
+
+(say # Model checking \s (cont.) {.allowframebreaks} \n)
+(say * It also has safety... \n)
+(say \n \n ~~~ {.latex})
+(say mc mutex() |= []~ (p1(2) /\ p2(2)))
+set show loop stats on .
+set show loop timing on .
+(mc mutex() |= []~ (p1(2) /\ p2(2)))
+set show loop stats off .
+set show loop timing off .
+(say ~~~ \n \n)
+
+(say # Model checking \s (cont.) {.allowframebreaks} \n)
+(say * ... and strong liveness. \n)
+(say \n \n ~~~ {.latex})
+(say mc mutex() |= ([]<> p1(1)) -> ([]<> p1(2)))
+set show loop stats on .
+set show loop timing on .
+(mc mutex() |= ([]<> p1(1)) -> ([]<> p1(2)))
+set show loop stats off .
+set show loop timing off .
+(say ~~~ \n \n)
+
+(say # Conclusion \n)
+(say * Well,\s that is it for now.)
+(say * Let me conclude by saying that future work includes
+giving support to the complete Abstract Machine Notation, adding new verification techniques and refinement. \n)
+(say \n)
+(say * Thanks for watching!)
+
+quit

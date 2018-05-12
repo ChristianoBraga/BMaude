@@ -1,24 +1,28 @@
 #!/bin/bash
 
 MAUDE="/Users/cbraga/Applications/maudeAlpha115/maude-Yices2.darwin64"
-BMAUDE_DIR="/Users/cbraga/Dropbox/BMaude/generalized-smc/urucu-amarela/"
+BMAUDE_DIR="/Users/cbraga/Dropbox/BMaude-project/urucu-amarela/"
 
 if [ "$1" = "demo" ]; then
    $MAUDE -no-banner $BMAUDE_DIR/bmaude-no-banner.maude demo/demo.bmaude | less -R
 else
- if [ "$TERM_PROGRAM" = "iTerm.app" ] ;
- then
-   ./imgcat bmaude-terminal.jpg
-   if [ "$1" != "" ]; then
-      $MAUDE -no-banner $BMAUDE_DIR/bmaude-no-banner.maude "$1"
-   else
-      $MAUDE -no-banner $BMAUDE_DIR/bmaude-no-banner.maude
-   fi
- else
-   if [ "$1" != "" ]; then
-      $MAUDE -no-banner $BMAUDE_DIR/bmaude-banner.maude "$1"
-   else
-      $MAUDE -no-banner $BMAUDE_DIR/bmaude-banner.maude
+  if [ "$1" = "demo-md" ]; then
+     $MAUDE -no-banner $BMAUDE_DIR/bmaude-no-banner.maude demo/demo-md.bmaude
+  else
+    if [ "$TERM_PROGRAM" = "iTerm.app" ] ;
+    then
+      ./imgcat bmaude.jpg
+      if [ "$1" != "" ]; then
+         $MAUDE -no-banner $BMAUDE_DIR/bmaude-no-banner.maude "$1"
+      else
+         $MAUDE -no-banner $BMAUDE_DIR/bmaude-no-banner.maude
+      fi
+    else
+      if [ "$1" != "" ]; then
+         $MAUDE -no-banner $BMAUDE_DIR/bmaude-banner.maude "$1"
+      else
+         $MAUDE -no-banner $BMAUDE_DIR/bmaude-banner.maude
+      fi
    fi
  fi
 fi

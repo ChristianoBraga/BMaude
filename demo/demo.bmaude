@@ -19,6 +19,7 @@ load ../examples/fact.bmaude
 (view)
 
 (say \n Now we can excute a call to factorial of 100, \s for instance, \s ... \n)
+(say \c exec fact(100))
 set show loop stats on .
 set show loop timing on .
 (exec fact(100))
@@ -26,6 +27,7 @@ set show loop stats off .
 set show loop timing off .
 
 (say \n ... some steps, say 3, of the same operation call... \n)
+(say \c execn 3 fact(100))
 set show loop stats on .
 set show loop timing on .
 (execn 3 fact(100))
@@ -34,6 +36,7 @@ set show loop timing off .
 
 (say \n ... or symbolically execute some steps of a call to fact with 
 some rational number. \n)
+(say \c sexec 3 fact(98 + R:Rat))
 set show loop stats on .
 set show loop timing on .
 (sexec 3 fact(98 + R:Rat))
@@ -47,6 +50,7 @@ load ../examples/fact2.bmaude
 (view)
 
 (say \n Let's call fact of 1000 and check its execution time. \n)
+(say \c exec fact(1000))
 set show loop stats on .
 set show loop timing on .
 (exec fact(1000))
@@ -61,6 +65,7 @@ load ../examples/mutex.bmaude
 (view)
 
 (say \n Let's first search for a state where process p1 is in the critical section. Note that the initial state is given by the VALUES declaration. In this example, the state space is induced by a call to operation mutex, but in general, it could be any substitution. \n)
+(say \c search 1 mutex() where p1 = 2)
 set show loop stats on .
 set show loop timing on .
 (search 1 mutex() where p1 = 2)
@@ -68,6 +73,7 @@ set show loop stats off .
 set show loop timing off .
 
 (say \n We can also check for the safety property using search, that is, a state where neither p1 nor p2 are in the critical section. \n)
+(say \c search 1 mutex() where p1 = 2 and p2 = 2)
 set show loop stats on .
 set show loop timing on .
 (search 1 mutex() where p1 = 2 and p2 = 2)
@@ -77,6 +83,7 @@ set show loop timing off .
 (say \n No such state exists therefore our specification is safe. \n)
 
 (say Let's check for liveness now. For that we will use Linear Temporal Logic model checking. We say that a process is live if it tries to enter the critical section then it will eventually will. The model checker then return a counter-example showing that there exists an infinite path where only process p2 enters the critical section. \n)
+(say \c mc mutex() |= [](p1(1) -> <> p1(2)))
 set show loop stats on .
 set show loop timing on .
 (mc mutex() |= [](p1(1) -> <> p1(2)))
@@ -87,7 +94,7 @@ set show loop timing off .
 
 load ../examples/mutex2.bmaude
 (view)
-
+(say \c mc mutex() |= [](p1(1) -> <> p1(2)))
 set show loop stats on .
 set show loop timing on .
 (mc mutex() |= [](p1(1) -> <> p1(2)))
@@ -95,6 +102,7 @@ set show loop stats off .
 set show loop timing off .
 
 (say \n It also has safety... \n)
+(say \c mc mutex() |= []~ (p1(2) /\ p2(2)))
 set show loop stats on .
 set show loop timing on .
 (mc mutex() |= []~ (p1(2) /\ p2(2)))
@@ -102,6 +110,7 @@ set show loop stats off .
 set show loop timing off .
 
 (say \n ... and strong liveness. \n)
+(say \c mc mutex() |= ([]<> p1(1)) -> ([]<> p1(2)))
 set show loop stats on .
 set show loop timing on .
 (mc mutex() |= ([]<> p1(1)) -> ([]<> p1(2)))
