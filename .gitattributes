@@ -1,0 +1,2 @@
+./ linguist-detectable=true
+*.maude linguist-language=Maude
