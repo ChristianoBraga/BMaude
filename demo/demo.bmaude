@@ -7,7 +7,7 @@ set show loop timing off .
 (say This demo is for version Uruçu-Amarela of February 2018.)
 (say Uruçu-amarela is a kind of bee common in the Rio de Janeiro area. \n)
 (say In this demo, \s we illustrate the subset of the Abstract Machine Notation
-currently supported by the tool and the avaiable verification techniques. )
+currently supported by the tool and the available verification techniques. )
 (say \t o A machine declares variables, constants, their values and operations. 
 An operation can be any composition of generalized substitutions.)
 (say \t o The verification techniques currently supported by BMaude are execution by rewriting, symbolic execution by narrowing, 
