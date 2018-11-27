@@ -74,6 +74,7 @@ David Deharbe and Anamaria Moreira, specialists in the B Method.
   (such as value stack, memory store, environmnent), and transitions are induced by _unconditional_ rules relating states.
   * It extends the concept of Interpreting Automata by Gordon Plotkin, following Modular SOS, Modular Rewriting Semantics and K.  
   * The mathematical notation follows standard notation from Automata Theory, as Compiler Construction courses usually follows Formal Languages and Automata Theory courses at undergraduate level.  
+    $\delta : L(G)^* \times L(G)^* \times Store \to Q$
     > _δ : L(G)<sup>* </sup> × L(G)<sup>* </sup>  × Store → Q_  
     > _δ(Loop(X,M) :: C, V, E, S) = δ(X :: #LOOP :: C, Loop(X,M)::V, E, S)_  
     > _δ(#LOOP :: C, Boo(true) :: Loop(X,M) :: V, E, S) = δ(M :: Loop(X,M) :: C, V, E, S)_  
