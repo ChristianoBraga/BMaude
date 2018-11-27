@@ -3,9 +3,9 @@ BMaude Prototype
 Uruçu-Amarela February 2018
 Author: Christiano Braga
 http://www.ic.uff.br/~cbraga
-Universidade Federal Fluminense, Brazil	
+Universidade Federal Fluminense, Brazil
 
-The BMaude Prototype is a tool for the verification of B specifications 
+The BMaude Prototype is a tool for the verification of B specifications
 implemented in the Maude language .
 )
 
@@ -13,43 +13,43 @@ implemented in the Maude language .
 --- Generalized SMC machines.
 
 fmod GSMC-SORTS is
-    sorts SemComp . 
+    sorts SemComp .
 endfm
 
 view SemComp from TRIV to GSMC-SORTS is
-    sort Elt to SemComp . 
+    sort Elt to SemComp .
 endv
 
 fmod GSMC is
     ex SET{SemComp} * (op empty to noSemComp) .
     sorts Attrib Conf .
-    op <_> : Set{SemComp} -> Conf [format(c! c! c! o)] . 
+    op <_> : Set{SemComp} -> Conf [format(c! c! c! o)] .
 endfm
 
 fmod VALUE-SORT is
-    sort Value . 
+    sort Value .
 endfm
 
 fmod CONTROL-SORT is
-    sort Control . 
+    sort Control .
 endfm
 
 view Control from TRIV to CONTROL-SORT is
-    sort Elt to Control . 
+    sort Elt to Control .
 endv
 
 view Value from TRIV to VALUE-SORT is
-    sort Elt to Value . 
+    sort Elt to Value .
 endv
 
---- Note: AI theories are not currently supported by Maude unification, 
---- as of Alpha 115. 
+--- Note: AI theories are not currently supported by Maude unification,
+--- as of Alpha 115.
 fmod GNELIST{X :: TRIV} is
     pr NAT .
     sorts GNeList{X} .
     subsort X$Elt < GNeList{X} .
 
-    op __ : GNeList{X} GNeList{X} -> GNeList{X} [ctor assoc prec 25] . 
+    op __ : GNeList{X} GNeList{X} -> GNeList{X} [ctor assoc prec 25] .
 endfm
 
 --------------------------------------------------------------
@@ -59,28 +59,28 @@ fmod VALUE-STACK is
     pr GNELIST{Value} * (sort GNeList{Value} to NeValueStack) .
     sort ValueStack .
     subsort NeValueStack < ValueStack .
-    op evs : -> ValueStack . 
-    op __ : ValueStack ValueStack -> ValueStack [ditto] . 	
+    op evs : -> ValueStack .
+    op __ : ValueStack ValueStack -> ValueStack [ditto] .
 endfm
 
 fmod CONTROL-STACK is
     pr GNELIST{Control} * (sort GNeList{Control} to NeControlStack) .
     sort ControlStack .
     subsort NeControlStack < ControlStack .
-    op ecs : -> ControlStack . 
-    op __ : ControlStack ControlStack -> ControlStack [ditto] . 	
+    op ecs : -> ControlStack .
+    op __ : ControlStack ControlStack -> ControlStack [ditto] .
 endfm
 
 fmod STORE-SORTS is
-    sorts Loc Storable . 
+    sorts Loc Storable .
 endfm
 
 view Loc from TRIV to STORE-SORTS is
-    sort Elt to Loc . 
+    sort Elt to Loc .
 endv
 
 view Storable from TRIV to STORE-SORTS is
-    sort Elt to Storable . 
+    sort Elt to Storable .
 endv
 
 fmod STORE is
@@ -108,11 +108,11 @@ fmod STORE is
     op free : Set{Loc} Store -> Store .
     eq free(noLocs, S:Store) = S:Store .
     eq free((L:Loc , SL:Set{Loc}), S:Store) =
-       free(SL:Set{Loc}, $free(L:Loc, S:Store)) [owise] . 
+       free(SL:Set{Loc}, $free(L:Loc, S:Store)) [owise] .
 endfm
 
 fmod ENV-SORTS is
-    sorts Id Bindable . 
+    sorts Id Bindable .
 endfm
 
 view Id from TRIV to ENV-SORTS is sort Elt to Id . endv
@@ -122,7 +122,7 @@ view Bindable from TRIV to ENV-SORTS is sort Elt to Bindable . endv
 fmod ENV is
     ex MAP{Id,Bindable} * (sort Entry{Id,Bindable} to Bind,
        sort Map{Id,Bindable} to Env,
-       op undefined to undefid, op empty to noEnv). 
+       op undefined to undefid, op empty to noEnv).
 endfm
 
 fmod EXP is
@@ -645,11 +645,11 @@ endm
 --- Basic programming languages constructs.
 mod BPLC is
     ex EXIT .
-    
+
     var ... : Set{SemComp} .
-    
+
     op getValue : Id Conf -> Storable .
-    eq getValue(I:Id, 
+    eq getValue(I:Id,
           < env : (I:Id |-> bind(L:Loc), E:Env) ,
           sto : (L:Loc |-> S:Storable, S:Store) ,
    	  ... >) = S:Storable .
@@ -662,9 +662,9 @@ mod BPLC-MODEL-CHECKER is
     pr MODEL-CHECKER .
 
     subsort Conf < State .
-    
+
     var ... : Set{SemComp} .
-    
+
     op valueOf : Id Rat Conf -> Bool .
     op valueOf : Id Bool Conf -> Bool .
     eq valueOf(I:Id, R:Rat,
@@ -867,7 +867,7 @@ fmod AMN-SYNTAX is
     subsort AMNValuation < AMNValSet .
     subsort AMNOperation < AMNOpSet .
     subsort GSLExpression < GSLActuals .
-    
+
     op _,_ : GSLActuals GSLActuals -> GSLActuals [assoc] .
 
     op MACHINE_END : GSLIdentifiers -> AMNMachine .
@@ -1003,7 +1003,7 @@ mod AMN-TO-BPLC is
           VS:AMNValuesClause OP:AMNOperations END) =
           dec(compile(C:AMNAbsConstants, VS:AMNValuesClause),
            compile(OP:AMNOperations)) .
-    
+
     eq compile( MACHINE I:GSLIdentifiers OP:AMNOperations END) =
           compile(OP:AMNOperations) .
 endm
@@ -1014,9 +1014,9 @@ mod RUN-AMN is
     inc QID .
 
     op getValue : GSLIdentifiers Conf -> Storable .
-    eq getValue(I:GSLIdentifiers, C:Conf) = 
-	getValue(compile(I:GSLIdentifiers), C:Conf) . 
-    
+    eq getValue(I:GSLIdentifiers, C:Conf) =
+	getValue(compile(I:GSLIdentifiers), C:Conf) .
+
     op run : GSLSubstitution AMNMachine -> Conf .
     rl run(S:GSLSubstitution, M:AMNMachine) =>
 	< cnt : blk(compile(M:AMNMachine), compile(S:GSLSubstitution)) ecs,
@@ -1031,7 +1031,7 @@ endm
 mod AMN-MODEL-CHECKER is
     ex RUN-AMN .
     ex BPLC-MODEL-CHECKER .
-    
+
     op valueOf : GSLIdentifiers Rat State -> Bool .
     op valueOf : GSLIdentifiers Bool State -> Bool .
     eq valueOf(I:GSLIdentifiers, R:Rat, S:State) =
@@ -1048,7 +1048,7 @@ endm
 
 fmod TOKEN is
      pr QID-LIST .
-    
+
      sorts Token Bubble NeTokenList .
      op token : Qid -> Token
         [special
@@ -1060,10 +1060,10 @@ fmod TOKEN is
         [special
           (id-hook Bubble        (1 -1)
         op-hook qidListSymbol (__ : QidList QidList ~> QidList)
-        op-hook qidSymbol     (<Qids> : ~> Qid)  
+        op-hook qidSymbol     (<Qids> : ~> Qid)
 	id-hook Exclude       ( OR IF THEN ELSE END BEGIN WHILE ; := = skip )
 	  ) ] .
-    
+
     op neTokenList : QidList -> NeTokenList
         [special
           (id-hook Bubble        (1 -1)
@@ -1102,12 +1102,12 @@ fmod AMN-GRAMMAR is
     op _=_ : Token SubstitutionDecl -> OperationDecl [prec 50] .
     op _`(_`)=_ : Token TokenList SubstitutionDecl -> OperationDecl  [prec 50] .
     op _;_ : OperationDeclList OperationDeclList -> OperationDeclList  [assoc prec 60] .
-    
+
     --- GSL Substitutions
     op _:=_ : Token Token -> SubstitutionDecl [prec 40] .
     op _:=_ : Token ExpressionDecl -> SubstitutionDecl [prec 40] .
 
-    op _() : Token -> SubstitutionDecl .	
+    op _() : Token -> SubstitutionDecl .
     op _(_) : Token Bubble -> SubstitutionDecl .
     op print : Token -> SubstitutionDecl .
     op print : ExpressionDecl -> SubstitutionDecl .
@@ -1165,7 +1165,7 @@ fmod PROCESS-AMN-DECL is
     inc AMN-SYNTAX .
     pr META-LEVEL .
     pr CONVERSION .
-    
+
     op processPreMachine : Term ~> AMNMachine .
     eq processPreMachine('MACHINE__END['token[I:Qid], T:Term]) =
         MACHINE processPreIdentifiers(I:Qid) processPreClauses(T:Term) END .
@@ -1256,7 +1256,7 @@ fmod PROCESS-AMN-DECL is
     op processPreIdentifiers : Qid -> GSLIdentifiers .
     ceq processPreIdentifiers(I:Qid) = bid(downTerm(I:Qid, 'processPreIdentifiersError))
       if downTerm(I:Qid, 'processPreIdentifiersError) =/= 'processPreIdentifiersError .
-    
+
     op processPreSubstitution : Term -> GSLSubstitution .
 
     eq processPreSubstitution('skip.SubstitutionDecl) = (skip).GSLSubstitution .
@@ -1271,16 +1271,16 @@ fmod PROCESS-AMN-DECL is
 
     eq processPreSubstitution('_`(_`)['token[I:Qid], 'bubble[Q:Qid]]) =
    	(processPreIdentifiers(I:Qid) (processPreActuals(Q:Qid))) .
-    
+
     eq processPreSubstitution('_`(_`)['token[I:Qid], 'bubble['__[TL:TermList]]]) =
 	(processPreIdentifiers(I:Qid) (processPreActuals(TL:TermList))) .
-    
-    op processPreActuals : TermList -> GSLActuals .	
+
+    op processPreActuals : TermList -> GSLActuals .
     eq processPreActuals(Q:Qid) = processPreExpression(Q:Qid) .
-    eq processPreActuals((TL1:TermList, ''`,.Qid , TL2:TermList)) = 
+    eq processPreActuals((TL1:TermList, ''`,.Qid , TL2:TermList)) =
 	makeGSLExpression(TL1:TermList) , processPreActuals(TL2:TermList) .
     eq processPreActuals(TL:TermList) = makeGSLExpression(TL:TermList) [owise] .
-    
+
     op makeGSLExpression : TermList -> GSLExpression .
     eq makeGSLExpression(Q:Qid) = processPreExpression(Q:Qid) .
 
@@ -1295,9 +1295,9 @@ fmod PROCESS-AMN-DECL is
     eq makeExprDeclQidList((empty).TermList) = (nil).QidList .
     ceq makeExprDeclQidList(Q:Qid) = downTerm(Q:Qid, 'error)
     if downTerm(Q:Qid, 'error) =/= 'error .
-    eq makeExprDeclQidList((Q:Qid , TL:TermList)) = 
+    eq makeExprDeclQidList((Q:Qid , TL:TermList)) =
 	makeExprDeclQidList(Q:Qid) makeExprDeclQidList(TL:TermList) .
-    
+
     eq processPreSubstitution('IF_THEN_END[T1:Term, T2:Term]) =
 	IF processPrePredicate(T1:Term)
 	THEN processPreSubstitution(T2:Term) END .
@@ -1331,29 +1331,29 @@ fmod PROCESS-AMN-DECL is
 
     op processPreExpression : Qid -> GSLExpression .
 
-    eq processPreExpression(I:Qid) = 
+    eq processPreExpression(I:Qid) =
         if (metaParse(upModule('RAT, false), downTerm(I:Qid, 'Qid), 'Rat)  :: ResultPair)
 	then grat(downTerm(getTerm(metaParse(upModule('RAT, false),
 		  downTerm(I:Qid, 'Qid), 'Rat)), 1/2))
 	else
-	if metaParse(upModule('RAT, false), downTerm(I:Qid, 'Qid), 'Bool) :: ResultPair 
+	if metaParse(upModule('RAT, false), downTerm(I:Qid, 'Qid), 'Bool) :: ResultPair
 	  then gboo(downTerm(getTerm(metaParse(upModule('BOOL, false),
 		    downTerm(I:Qid, 'Qid), 'Bool)), true))
-	  else processPreIdentifiers(I:Qid) 
-	  fi 
+	  else processPreIdentifiers(I:Qid)
+	  fi
 	fi .
-    
+
     op processPreExpression : Term -> GSLExpression .
-    eq processPreExpression('token[I:Qid]) = 
+    eq processPreExpression('token[I:Qid]) =
         if (metaParse(upModule('RAT, false), downTerm(I:Qid, 'Qid), 'Rat)  :: ResultPair)
 	then grat(downTerm(getTerm(metaParse(upModule('RAT, false),
 		  downTerm(I:Qid, 'Qid), 'Rat)), 1/2))
 	else
-	if metaParse(upModule('RAT, false), downTerm(I:Qid, 'Qid), 'Bool) :: ResultPair 
+	if metaParse(upModule('RAT, false), downTerm(I:Qid, 'Qid), 'Bool) :: ResultPair
 	  then gboo(downTerm(getTerm(metaParse(upModule('BOOL, false),
 		    downTerm(I:Qid, 'Qid), 'Bool)), true))
-	  else processPreIdentifiers(I:Qid) 
-	  fi 
+	  else processPreIdentifiers(I:Qid)
+	  fi
 	fi .
 
     eq processPreExpression('_+_[T1:Term, T2:Term]) =
@@ -1396,7 +1396,7 @@ mod BMAUDE-PRINTING is
     op printQidList : QidList -> QidList .
     eq printQidList(nil) = (nil).QidList .
     eq printQidList(Q:Qid QL:QidList) = printToken(Q:Qid) printQidList(QL:QidList) .
-    
+
     op printToken : Qid -> Qid .
     eq printToken('MACHINE) = '\b '\! 'MACHINE '\o .
     eq printToken('VARIABLES) = '\b '\! 'VARIABLES '\o .
@@ -1411,7 +1411,7 @@ mod BMAUDE-PRINTING is
     eq printToken('ELSE) = '\b '\! 'ELSE '\o .
     eq printToken('END) = '\b '\! 'END '\o .
     eq printToken('BEGIN) = '\b '\! 'BEGIN '\o .
-    eq printToken('print) = '\b '\! 'print '\o .	
+    eq printToken('print) = '\b '\! 'print '\o .
     eq printToken(':=) = '\b '\! ':= '\o .
     eq printToken('/\) = '\b '\! '/\ '\o .
     eq printToken('==) = '\b '\! '== '\o .
@@ -1425,12 +1425,12 @@ mod BMAUDE-PRINTING is
     eq printToken('`]) = '\b '\! '`] '\o .
     eq printToken('skip) = '\b '\! 'skip '\o .
     eq printToken(Q:Qid) = (Q:Qid) [owise] .
-    
+
     op printInputWithError : QidList Nat -> QidList .
     op $printInputWithError : QidList Int QidList -> QidList .
-    eq printInputWithError(QL:QidList, N:Nat) = 
+    eq printInputWithError(QL:QidList, N:Nat) =
 	$printInputWithError(QL:QidList, N:Nat, (nil).QidList) .
-    eq $printInputWithError(QL:QidList, -1, (nil).QidList) = (nil).QidList . 
+    eq $printInputWithError(QL:QidList, -1, (nil).QidList) = (nil).QidList .
 
     ceq $printInputWithError(QL1:QidList, -1, (QL2:QidList Q:Qid)) =
       QL2:QidList '\r '>>> Q:Qid '<<< 'HERE '\o
@@ -1442,12 +1442,12 @@ mod BMAUDE-PRINTING is
 	printToken(Q:Qid)) .
 
     op printParseError : QidList ResultPair? -> Qid .
-    eq printParseError('MACHINE Q:Qid QL:QidList , noParse(N:Nat)) = 
-	'BMaude: 'Error 'at 'position 
-	metaPrettyPrint(upModule('NAT, false), upTerm(N:Nat)) 
-	'while 'parsing 'Machine Q:Qid ': '\n 
+    eq printParseError('MACHINE Q:Qid QL:QidList , noParse(N:Nat)) =
+	'BMaude: 'Error 'at 'position
+	metaPrettyPrint(upModule('NAT, false), upTerm(N:Nat))
+	'while 'parsing 'Machine Q:Qid ': '\n
 	printInputWithError(('MACHINE Q:Qid QL:QidList), N:Nat) .
-    
+
     eq printParseError(QL:QidList, ambiguity(T1:ResultPair, T2:ResultPair)) =
 	'BMaude: '\r 'Ambiguous 'parse '\o '\n
 	metaPrettyPrint(upModule('AMN-GRAMMAR, false), getTerm(T1:ResultPair)) '\n
@@ -1460,16 +1460,16 @@ mod BMAUDE-PRINTING is
 	printGSLIdentifiers(I:GSLIdentifiers) printToken('=)
 	printExpression(E:GSLExpression) .
 
-    eq printValSet(V:AMNValuation ; VS:AMNValSet) = 
+    eq printValSet(V:AMNValuation ; VS:AMNValSet) =
 	printValSet(V:AMNValuation) printToken(';) printValSet(VS:AMNValSet) .
-    
+
     op printIdList : AMNIdList -> QidList .
     eq printIdList(I:GSLIdentifiers) = printGSLIdentifiers(I:GSLIdentifiers) .
 
     eq printIdList(I:GSLIdentifiers @, IL:AMNIdList) =
 	printGSLIdentifiers(I:GSLIdentifiers) printToken('`,) '\s
 	printIdList(IL:AMNIdList) .
-    
+
     op printClause : AMNAbsVariables -> QidList .
 
     eq printClause(VARIABLES IL:AMNIdList) = '\n '\s
@@ -1511,7 +1511,7 @@ mod BMAUDE-PRINTING is
 
     eq printExpression(grat(R:Rat)) = '\g
        metaPrettyPrint(upModule('RAT, false), upTerm(R:Rat)) '\o .
-    
+
     eq printExpression(I:GSLIdentifiers) = printGSLIdentifiers(I:GSLIdentifiers) .
 
     eq printExpression(P:GSLPredicate) = printPredicate(P:GSLPredicate) .
@@ -1537,17 +1537,17 @@ mod BMAUDE-PRINTING is
 
     op printActuals : GSLActuals -> QidList .
     eq printActuals(E:GSLExpression) = printExpression(E:GSLExpression) .
-    eq printActuals((E:GSLExpression, A:GSLActuals)) = 
+    eq printActuals((E:GSLExpression, A:GSLActuals)) =
 	printExpression(E:GSLExpression) printToken('`,) printActuals(A:GSLActuals) .
-    
+
     op printSubstitution : GSLSubstitution Nat -> QidList .
 
     eq printSubstitution(@print(I:GSLIdentifiers), N:Nat) =
        printToken('print) '`( printGSLIdentifiers(I:GSLIdentifiers) '`) .
 
-    eq printSubstitution(skip, N:Nat) = printToken('skip) . 
+    eq printSubstitution(skip, N:Nat) = printToken('skip) .
 
-    eq printSubstitution((I:GSLIdentifiers ()), N:Nat) = 
+    eq printSubstitution((I:GSLIdentifiers ()), N:Nat) =
 	printGSLIdentifiers(I:GSLIdentifiers) printToken('`() printToken('`)) .
 
     eq printSubstitution((I:GSLIdentifiers (A:GSLActuals)), N:Nat) =
@@ -1576,9 +1576,9 @@ mod BMAUDE-PRINTING is
 	'\n printSpaces(N:Nat) printPredicate(P:GSLPredicate)
 	printToken('|) printSubstitution(S:GSLSubstitution, N:Nat) .
 
-    eq printSubstitution((WHILE P:GSLPredicate DO S:GSLSubstitution), N:Nat) = 
-	'\n printSpaces(N:Nat) printToken('WHILE) printPredicate(P:GSLPredicate) 
-	printToken('DO) 
+    eq printSubstitution((WHILE P:GSLPredicate DO S:GSLSubstitution), N:Nat) =
+	'\n printSpaces(N:Nat) printToken('WHILE) printPredicate(P:GSLPredicate)
+	printToken('DO)
 	printSubstitution(S:GSLSubstitution, N:Nat + 1) .
 
     eq printSubstitution((IF P:GSLPredicate THEN S:GSLSubstitution END), N:Nat) =
@@ -1611,14 +1611,14 @@ mod BMAUDE-PRINTING is
 	printGSLIdentifiers(I:GSLIdentifiers) '`(
 	printIdList(IL:AMNIdList) '`) '=
 	printSubstitution(S:GSLSubstitution, N:Nat + 1) .
-    
+
     op printSpaces : Nat -> QidList .
     eq printSpaces(0) = (nil).QidList .
     eq printSpaces(N:Nat) = '\s printSpaces(sd(N:Nat, 1)) .
-    
+
     op printOperations : AMNOpSet -> QidList .
     eq printOperations(O:AMNOperation) = printOperation(O:AMNOperation, 2) .
-    eq printOperations(O:AMNOperation ; OS:AMNOpSet) = 
+    eq printOperations(O:AMNOperation ; OS:AMNOpSet) =
 	printOperation(O:AMNOperation, 2) '; '\n printOperations(OS:AMNOpSet) .
 
     op printClause : AMNOpSet -> QidList .
@@ -1635,36 +1635,36 @@ mod BMAUDE-PRINTING is
 
     eq printClauses(OP:AMNOperations) = printClause(OP:AMNOperations) .
 
-    eq printClauses(V:AMNAbsVariables C:AMNClauses) = 
+    eq printClauses(V:AMNAbsVariables C:AMNClauses) =
 	printClause(V:AMNAbsVariables) printClauses(C:AMNClauses) .
 
-    eq printClauses(T:AMNAbsConstants C:AMNClauses) = 
+    eq printClauses(T:AMNAbsConstants C:AMNClauses) =
    	printClause(T:AMNAbsConstants) printClauses(C:AMNClauses) .
 
-    eq printClauses(V:AMNValuesClause C:AMNClauses) = 
+    eq printClauses(V:AMNValuesClause C:AMNClauses) =
   	printClause(V:AMNValuesClause) printClauses(C:AMNClauses) .
 
-    eq printClauses(OP:AMNOperations C:AMNClauses) = 
+    eq printClauses(OP:AMNOperations C:AMNClauses) =
    	printClause(OP:AMNOperations) printClauses(C:AMNClauses) .
-    
+
     op printMachine : AMNMachine -> QidList .
-    eq printMachine(MACHINE Q:GSLIdentifiers C:AMNClauses END) = 
-	printToken('MACHINE) printGSLIdentifiers(Q:GSLIdentifiers) 
+    eq printMachine(MACHINE Q:GSLIdentifiers C:AMNClauses END) =
+	printToken('MACHINE) printGSLIdentifiers(Q:GSLIdentifiers)
 	printClauses(C:AMNClauses)
-	--- metaPrettyPrint(upModule('BMAUDE, false), upTerm(C:AMNClauses)) 
+	--- metaPrettyPrint(upModule('BMAUDE, false), upTerm(C:AMNClauses))
 	'\n printToken('END) .
-    
+
     op printId : Id -> Qid .
     eq printId(gid(bid(Q:Qid))) = (Q:Qid).Qid .
 
     op printGSLIdentifiers : GSLIdentifiers -> Qid .
     eq printGSLIdentifiers(bid(Q:Qid)) = '\c (Q:Qid).Qid '\o .
-    
+
     op printState : Env Store -> QidList .
 
     eq printState(noEnv, S:Store) = (nil).QidList .
 
-    eq printState((I:Id |-> bind(L:Loc)) , ((L:Loc |-> store(R:Rat)), S:Store)) = 
+    eq printState((I:Id |-> bind(L:Loc)) , ((L:Loc |-> store(R:Rat)), S:Store)) =
 	printId(I:Id) '= metaPrettyPrint(upModule('RAT, false), upTerm(R:Rat)) .
 
     ceq printState(((I:Id |-> bind(L:Loc)), E:Env) ,
@@ -1683,7 +1683,7 @@ mod BMAUDE-PRINTING is
    	metaPrettyPrint(upModule('RAT, false), upTerm(B:Bool)) '`,
    	printState(E:Env , (L:Loc |-> store(B:Bool), S:Store)) if
    	E:Env =/= noEnv .
-    
+
     eq printState(((I:Id |-> B:Bindable), E:Env) , S:Store) =
        printState(E:Env , S:Store) [owise] .
 
@@ -1703,7 +1703,7 @@ mod BMAUDE-PRINTING is
 	  upTerm(R:Rat)) '\o .
 
     eq printExp(boo(B:Bool)) = '\g metaPrettyPrint(upModule('BOOL, false),
-	  upTerm(B:Bool)) '\o . 
+	  upTerm(B:Bool)) '\o .
 
     eq printExp(neg(E:Exp)) = printToken('~) printExp(E:Exp) .
     eq printExp(and(E1:Exp, E2:Exp)) = printExp(E1:Exp) printToken('/\) printExp(E2:Exp) .
@@ -1713,11 +1713,11 @@ mod BMAUDE-PRINTING is
 
     op printCnt : ControlStack ValueStack -> QidList .
     eq printCnt((LOOP C:ControlStack), (V:Value val(loop(E:Exp, K:Cmd)) VS:ValueStack)) =
-	printToken('WHILE) printToken('`() printExp(E:Exp) printToken('`)) '... .  
+	printToken('WHILE) printToken('`() printExp(E:Exp) printToken('`)) '... .
 
     eq printCnt((choice(K1:Cmd, K2:Cmd) C:ControlStack), VS:ValueStack) =
-   	printCmd(K1:Cmd) printToken('OR) printCmd(K2:Cmd) . 
-    
+   	printCmd(K1:Cmd) printToken('OR) printCmd(K2:Cmd) .
+
     eq printCnt(C:ControlStack, VS:ValueStack) =
 	'\n 'Constrol 'stack:
 	metaPrettyPrint(upModule('BMAUDE, false),
@@ -1734,7 +1734,7 @@ mod BMAUDE-PRINTING is
 	then printCnt(C:ControlStack, V:ValueStack) '`[ printState(E:Env, S:Store) '`]
 	else 'abort fi .
 
-    --- TODO: There is a parsing problem here: 
+    --- TODO: There is a parsing problem here:
 
     --- Warning: "bmaude.maude", line 544 (mod BMAUDE-PRINTING):
     --- multiple distinct parses for statement
@@ -1745,35 +1745,35 @@ mod BMAUDE-PRINTING is
 
     eq printTraceStep({T:Term, Y:Type, R:Rule}) =
        printConf(downTerm(T:Term, < noSemComp >)) .
-    
+
     op printTrace : Trace Nat -> QidList .
     eq printTrace(nil, N:Nat) = (nil).QidList .
-    eq printTrace(TS:TraceStep, N:Nat) = 
+    eq printTrace(TS:TraceStep, N:Nat) =
 	'\b 'State metaPrettyPrint(upModule('NAT, false), upTerm(N:Nat)) ': '\o '\n
 	printTraceStep(TS:TraceStep) .
 
-    ceq printTrace(TS:TraceStep T:Trace, N:Nat) = 
+    ceq printTrace(TS:TraceStep T:Trace, N:Nat) =
 	'\b 'State metaPrettyPrint(upModule('NAT, false), upTerm(N:Nat)) ': '\o '\n
-	printTraceStep(TS:TraceStep) '\n printTrace(T:Trace, (N:Nat + 1)) 
+	printTraceStep(TS:TraceStep) '\n printTrace(T:Trace, (N:Nat + 1))
       if T:Trace =/= nil .
-    
+
     op printTransitionList : TransitionList -> QidList .
-    eq printTransitionList(nil) = (nil).QidList . 
+    eq printTransitionList(nil) = (nil).QidList .
     eq printTransitionList({C:Conf, R:RuleName}) = printConf(C:Conf) .
-    ceq printTransitionList({C:Conf, R:RuleName} TL:TransitionList) = 
-	printConf(C:Conf) '\b '-> '\o printTransitionList(TL:TransitionList) 
+    ceq printTransitionList({C:Conf, R:RuleName} TL:TransitionList) =
+	printConf(C:Conf) '\b '-> '\o printTransitionList(TL:TransitionList)
       if TL:TransitionList =/= nil .
-    
+
     op printModelCheckResult : ModelCheckResult -> QidList .
-    eq printModelCheckResult(B:Bool) = 
-	'BMaude: '\b 'Model 'check 'result '\o '\n  
+    eq printModelCheckResult(B:Bool) =
+	'BMaude: '\b 'Model 'check 'result '\o '\n
 	metaPrettyPrint(upModule('BOOL, false), upTerm(B:Bool)) .
-    eq printModelCheckResult(counterexample(TL1:TransitionList, TL2:TransitionList)) = 
-	'BMaude: '\b 'Model 'check 'counter 'example '\o '\n  
+    eq printModelCheckResult(counterexample(TL1:TransitionList, TL2:TransitionList)) =
+	'BMaude: '\b 'Model 'check 'counter 'example '\o '\n
 	'\b 'Path 'from 'the 'initial 'state: '\o
 	'\n printTransitionList(TL1:TransitionList)
-   	'\n '\b 'Loop: '\o 
-	'\n printTransitionList(TL2:TransitionList) .	
+   	'\n '\b 'Loop: '\o
+	'\n printTransitionList(TL2:TransitionList) .
 
     op printValueStack : ValueStack -> QidList .
     eq printValueStack(evs) = '\b 'No 'output. '\o .
@@ -1784,19 +1784,19 @@ mod BMAUDE-PRINTING is
     eq printValueStack(val(B:Bool) evs) =
        metaPrettyPrint(upModule('BOOL, false), upTerm(B:Bool)) .
 
-    eq printValueStack(V:Value VS:ValueStack) = 
+    eq printValueStack(V:Value VS:ValueStack) =
 	printValueStack(V:Value) printValueStack(VS:ValueStack) .
-    
+
     op printOut : Conf -> QidList .
     eq printOut(< out : O:ValueStack , ...:Set{SemComp} > ) =
        printValueStack(O:ValueStack) .
-    
+
     op printExec : Term ~> QidList .
-    ceq printExec(T:Term) = printOut(downTerm(T:Term, < noSemComp >)) 
+    ceq printExec(T:Term) = printOut(downTerm(T:Term, < noSemComp >))
       if downTerm(T:Term, < noSemComp >) =/= < noSemComp > .
 
     op printExecn : Term ~> QidList .
-    ceq printExecn(T:Term) = printConf(downTerm(T:Term, < noSemComp >)) 
+    ceq printExecn(T:Term) = printConf(downTerm(T:Term, < noSemComp >))
       if downTerm(T:Term, < noSemComp >) =/= < noSemComp > .
 endm
 
@@ -1804,28 +1804,28 @@ mod BMAUDE-MODEL-CHECKER is
     pr AMN-MODEL-CHECKER .
     pr META-LEVEL .
     pr BMAUDE .
-    
+
     op makeOpDeclSet : AMNIdList -> OpDeclSet .
     eq makeOpDeclSet(bid(Q:Qid)) = (op Q:Qid : 'Rat -> 'Prop [none] .) .
-    eq makeOpDeclSet(I:GSLIdentifiers @, IL:AMNIdList) = 
+    eq makeOpDeclSet(I:GSLIdentifiers @, IL:AMNIdList) =
 	makeOpDeclSet(I:GSLIdentifiers) makeOpDeclSet(IL:AMNIdList) .
-    
+
     op makeEqSet : AMNIdList -> EquationSet .
 
     eq makeEqSet(bid(Q:Qid)) = (ceq '_|=_['S:State, Q:Qid['R:Rat]] =
 	'true.Bool if 'valueOf['bid[upTerm(Q:Qid)],'R:Rat,'S:State] =
 	'true.Bool [none] .) .
 
-    eq makeEqSet(I:GSLIdentifiers @, IL:AMNIdList) = 
+    eq makeEqSet(I:GSLIdentifiers @, IL:AMNIdList) =
    	makeEqSet(I:GSLIdentifiers) makeEqSet(IL:AMNIdList) .
-    
+
     op makeMCModule : AMNMachine -> SModule .
     eq makeMCModule(MACHINE bid(Q:Qid) (VARIABLES I:AMNIdList) C:AMNClauses END) =
-       (mod qid("MODEL-CHECK-" + string(Q:Qid)) is 
+       (mod qid("MODEL-CHECK-" + string(Q:Qid)) is
             protecting 'RUN-AMN .
-            protecting 'AMN-MODEL-CHECKER . 
+            protecting 'AMN-MODEL-CHECKER .
             protecting 'META-LEVEL .
-            protecting 'GSL-SYNTAX . 
+            protecting 'GSL-SYNTAX .
             sorts none .
             none --- SubsortDeclSet
             --- op 'bid : 'Qid -> 'GSLIdentifiers [none] .
@@ -1866,55 +1866,55 @@ mod BMAUDE-COMMANDS is
 	< search N:Nat S:GSLSubstitution C:Condition ; M:AMNMachine ; QIL > =>
 	< idle ; M:AMNMachine ;
       if T:ResultTriple? :: ResultTriple
- 	then ('BMaude: '\b 'Search 'trace '\o '\n  
+ 	then ('BMaude: '\b 'Search 'trace '\o '\n
 	    printTrace(metaSearchPath(upModule('BMAUDE, false),
-		upTerm(run(S:GSLSubstitution, M:AMNMachine)), 
+		upTerm(run(S:GSLSubstitution, M:AMNMachine)),
 		'C:Conf, C:Condition, '+, unbounded, N:Nat), 1))
-	else 
+	else
 	  (if (T:ResultTriple? == failure)
 	    then
 	      ('BMaude: '\b 'No 'solution 'while 'searching '\o
-		printSubstitution(S:GSLSubstitution, 0))  
+		printSubstitution(S:GSLSubstitution, 0))
 	    else
 	      ('BMaude: '\r 'Error 'while 'searching '\o
-		printSubstitution(S:GSLSubstitution, 0)) 
+		printSubstitution(S:GSLSubstitution, 0))
 	      fi)
 	fi >
       if T:ResultTriple? :=
 	  metaSearch(upModule('BMAUDE, false),
-	    upTerm(run(S:GSLSubstitution, M:AMNMachine)), 
+	    upTerm(run(S:GSLSubstitution, M:AMNMachine)),
 	    'C:Conf, C:Condition, '*, unbounded, N:Nat) .
-    
+
     crl [mc] :
 	< mc S:GSLSubstitution T:Term ; M:AMNMachine ; QIL > =>
 	< idle ; M:AMNMachine ;
       if (T:ResultPair? :: ResultPair) and
 	    (downTerm(getTerm(T:ResultPair?), error) :: ModelCheckResult)
- 	then printModelCheckResult(downTerm(getTerm(T:ResultPair?), error))	       
-	else 
+ 	then printModelCheckResult(downTerm(getTerm(T:ResultPair?), error))
+	else
 	  ('BMaude: '\r 'Error 'while 'model 'checking '\o
-	    printSubstitution(S:GSLSubstitution, 0) '|= 
-	    metaPrettyPrint(upModule('META-LEVEL, false), T:Term)) 
+	    printSubstitution(S:GSLSubstitution, 0) '|=
+	    metaPrettyPrint(upModule('META-LEVEL, false), T:Term))
 	fi >
       if T:ResultPair? :=
           metaReduce(makeMCModule(M:AMNMachine),
 	    '_`,_|=?_[upTerm(M:AMNMachine), upTerm(S:GSLSubstitution), T:Term]) .
-    
+
     crl [dmc] :
 	< dmc S:GSLSubstitution T:Term ; M:AMNMachine ; QIL > =>
 	< idle ; M:AMNMachine ;
       if (T:ResultPair? :: ResultPair) and
 	    (downTerm(getTerm(T:ResultPair?), error) :: ModelCheckResult)
  	then metaPrettyPrint(makeMCModule(M:AMNMachine), getTerm(T:ResultPair?))
-	else 
+	else
 	  ('BMaude: '\r 'Error 'while 'model 'checking '\o
-	    metaPrettyPrint(upModule('BMAUDE, false), upTerm(S:GSLSubstitution)) '|= 
-	    metaPrettyPrint(upModule('META-LEVEL, false), T:Term)) 
+	    metaPrettyPrint(upModule('BMAUDE, false), upTerm(S:GSLSubstitution)) '|=
+	    metaPrettyPrint(upModule('META-LEVEL, false), T:Term))
 	fi >
       if T:ResultPair? :=
           metaReduce(makeMCModule(M:AMNMachine),
 	    '_`,_|=?_[upTerm(M:AMNMachine), upTerm(S:GSLSubstitution), T:Term]) .
-    
+
 
     crl [exec-unbounded] :
 	< exec S:GSLSubstitution ; M:AMNMachine ; QIL > =>
@@ -1922,11 +1922,11 @@ mod BMAUDE-COMMANDS is
       if T:ResultPair? :: ResultPair
 	then 'BMaude: '\b 'Execution 'result '\o '\n printExec(getTerm(T:ResultPair?))
 	else ('BMaude: '\r 'Error 'while 'executing '\o
-	    printSubstitution(S:GSLSubstitution, 0)) 
+	    printSubstitution(S:GSLSubstitution, 0))
 	fi >
       if T:ResultPair? :=
 	  metaRewrite(upModule('BMAUDE, false),
-            upTerm(run(S:GSLSubstitution, M:AMNMachine)), unbounded) .			
+            upTerm(run(S:GSLSubstitution, M:AMNMachine)), unbounded) .
 
     crl [dexec-unbounded] :
 	< dexec S:GSLSubstitution ; M:AMNMachine ; QIL > =>
@@ -1934,25 +1934,25 @@ mod BMAUDE-COMMANDS is
       if T:ResultPair? :: ResultPair
 	then 'BMaude: '\b 'Execution 'result '\o '\n
 	  metaPrettyPrint(upModule('BMAUDE, false), getTerm(T:ResultPair?))
-	else ('BMaude: '\r 'Error 'while 'executing '\o 
-	    metaPrettyPrint(upModule('BMAUDE, false), upTerm(S:GSLSubstitution)) ) 
+	else ('BMaude: '\r 'Error 'while 'executing '\o
+	    metaPrettyPrint(upModule('BMAUDE, false), upTerm(S:GSLSubstitution)) )
 	fi >
       if T:ResultPair? :=
 	  metaRewrite(upModule('BMAUDE, false),
-            upTerm(run(S:GSLSubstitution, M:AMNMachine)), unbounded) .			
-    
+            upTerm(run(S:GSLSubstitution, M:AMNMachine)), unbounded) .
+
     crl [dexec-bounded] :
 	< dexec N:Nat S:GSLSubstitution ; M:AMNMachine ; QIL > =>
 	< idle ; M:AMNMachine ;
       if T:ResultPair? :: ResultPair
 	then 'BMaude: '\b 'Execution 'result '\o '\n
 	  metaPrettyPrint(upModule('BMAUDE, false), getTerm(T:ResultPair?))
-	else ('BMaude: '\r 'Error 'while 'executing '\o 
-	    metaPrettyPrint(upModule('BMAUDE, false), upTerm(S:GSLSubstitution)) ) 
+	else ('BMaude: '\r 'Error 'while 'executing '\o
+	    metaPrettyPrint(upModule('BMAUDE, false), upTerm(S:GSLSubstitution)) )
 	fi >
       if T:ResultPair? :=
 	  metaRewrite(upModule('BMAUDE, false),
-            upTerm(run(S:GSLSubstitution, M:AMNMachine)), N:Nat) .			
+            upTerm(run(S:GSLSubstitution, M:AMNMachine)), N:Nat) .
 
     crl [exec-bounded] :
 	< exec N:Nat S:GSLSubstitution ; M:AMNMachine ; QIL > =>
@@ -1960,58 +1960,58 @@ mod BMAUDE-COMMANDS is
       if T:ResultPair? :: ResultPair
 	then 'BMaude: '\b 'Execution 'state '\o '\n printExecn(getTerm(T:ResultPair?))
 	else ('BMaude: '\r 'Error 'while 'executing '\o
-	    printSubstitution(S:GSLSubstitution, 0)) 
+	    printSubstitution(S:GSLSubstitution, 0))
 	fi >
       if T:ResultPair? :=
 	  metaRewrite(upModule('BMAUDE, false),
-            upTerm(run(S:GSLSubstitution, M:AMNMachine)), N:Nat) .		
-    
+            upTerm(run(S:GSLSubstitution, M:AMNMachine)), N:Nat) .
+
     crl [sexec] :
 	< narrow N:Nat S:GSLSubstitution ; M:AMNMachine ; QIL > =>
 	< idle ; M:AMNMachine ;
       if T:ResultTriple? :: ResultTriple
  	then ('BMaude: '\b 'symbolic 'execution 'state 'after
-	    metaPrettyPrint(upModule('NAT, false), upTerm(N:Nat)) 'steps 'of 
+	    metaPrettyPrint(upModule('NAT, false), upTerm(N:Nat)) 'steps 'of
 	    printSubstitution(S:GSLSubstitution, 0) '\o '\n
 	    printExecn(getTerm(T:ResultTriple?)))
-	else 
+	else
 	  (if (T:ResultTriple? == failure)
 	    then
 	      ('BMaude: '\b 'No 'solution 'while 'symbolic 'executing
-		metaPrettyPrint(upModule('NAT, false), upTerm(N:Nat)) 'steps 'of '\o 
+		metaPrettyPrint(upModule('NAT, false), upTerm(N:Nat)) 'steps 'of '\o
 		printSubstitution(S:GSLSubstitution, 0))
 	    else
 	      ('BMaude: '\r 'Error 'while 'symbolic 'executing
-		metaPrettyPrint(upModule('NAT, false), upTerm(N:Nat)) 'steps 'of '\o 
+		metaPrettyPrint(upModule('NAT, false), upTerm(N:Nat)) 'steps 'of '\o
 		printSubstitution(S:GSLSubstitution, 0))
 	      fi)
 	fi >
       if T:ResultTriple? :=
 	  metaNarrow(upModule('BMAUDE, false),
 	    upTerm(run(S:GSLSubstitution, M:AMNMachine)),
-	    'C:Conf, '+, unbounded, N:Nat) .						
+	    'C:Conf, '+, unbounded, N:Nat) .
 endm
 
 mod BMAUDE-SEARCH-CONDITION is
     pr QID-LIST .
     pr META-LEVEL .
     pr RAT .
-    
+
     sort Condition? .
     subsort Condition < Condition? .
-    
-    op error : -> [Rat] . 
+
+    op error : -> [Rat] .
     op error : -> Condition? .
     op parseSearchCondition : QidList -> Condition? .
     eq parseSearchCondition(nil) = nil .
-    ceq parseSearchCondition(Q1:Qid '= Q2:Qid) = 
+    ceq parseSearchCondition(Q1:Qid '= Q2:Qid) =
       if (T:ResultPair? :: ResultPair and downTerm(getTerm(T:ResultPair?), error) :: Rat)
 	then 'getValue['gid['bid[upTerm(Q1:Qid)]],'C:Conf] = 'store[getTerm(T:ResultPair?)]
-	else error 	 
-	fi 
+	else error
+	fi
       if T:ResultPair? := metaParse(upModule('RAT, false), Q2:Qid, 'Rat) .
-    
-    eq parseSearchCondition(Q1:Qid '= Q2:Qid 'and QIL:QidList) = 
+
+    eq parseSearchCondition(Q1:Qid '= Q2:Qid 'and QIL:QidList) =
 	parseSearchCondition(Q1:Qid '= Q2:Qid) /\ parseSearchCondition(QIL:QidList) .
 endm
 
@@ -2022,10 +2022,10 @@ mod BMAUDE-INTERFACE is
     including BMAUDE-SEARCH-CONDITION .
     including BMAUDE-PRINTING .
     pr NAT .
-    
+
     subsort BMaudeState < LoopState .
 
-    op error : -> [Nat] . 
+    op error : -> [Nat] .
     op error : -> [Formula] .
     op init : -> System .
     op init`B`Maude`no`banner : -> System .
@@ -2036,11 +2036,11 @@ mod BMAUDE-INTERFACE is
     eq init`B`Maude`no`banner = [nil, < idle ; noMachine ; nil >, nil] .
 
     vars QIL QIL' QIL'' QIL1 QIL2 : QidList .
-    
+
     rl [version] : ['version, B:BMaudeState, QIL] => [nil, B:BMaudeState, banner] .
 
     rl [say] : ['say QIL1, B:BMaudeState, QIL2] => [nil, B:BMaudeState, '\g QIL1] .
-    
+
     crl [in] : ['MACHINE Q:Qid QIL, < idle ; M:Machine ; QIL' >, QIL''] =>
       if (T:ResultPair? :: ResultPair)
         then [nil, < processPreMachine(getTerm(T:ResultPair?)) ; M:Machine ; QIL' >, QIL'']
@@ -2051,41 +2051,23 @@ mod BMAUDE-INTERFACE is
 	  metaParse(upModule('AMN-GRAMMAR, false), 'MACHINE Q:Qid QIL, 'MachineDecl) .
 
     crl [view] : ['view 'machine, < idle ; M:Machine ; QIL' >, QIL''] =>
-	[nil, < idle ; M:Machine ; QIL' >, printMachine(M:Machine)] 
+	[nil, < idle ; M:Machine ; QIL' >, printMachine(M:Machine)]
       if M:Machine =/= noMachine .
 
     crl [view] : ['view, < idle ; M:Machine ; QIL' >, QIL''] =>
-	[nil, < idle ; M:Machine ; QIL' >, printMachine(M:Machine)] 
+	[nil, < idle ; M:Machine ; QIL' >, printMachine(M:Machine)]
       if M:Machine =/= noMachine .
 
     crl [no-machine-error] : [QIL, < idle ; noMachine ; QIL' >, QIL''] =>
         [nil, < idle ; noMachine ; QIL' >,
-	  'BMaude: '\r 'Error 'no 'machine 'loaded. '\o '] 
+	  'BMaude: '\r 'Error 'no 'machine 'loaded. '\o ']
       if QIL =/= nil .
-    
+
     crl [mc] : [('mc QIL1 '|= QIL2), < idle ; M:Machine ; QIL' >, QIL''] =>
       if ((P1:ResultPair? :: ResultPair) and (P2:ResultPair? :: ResultPair))
         then [nil,
           if processPreSubstitution(getTerm(P1:ResultPair?)) :: GSLSubstitution
 	    then < mc processPreSubstitution(getTerm(P1:ResultPair?))
-	      getTerm(P2:ResultPair?) ; M:Machine ; QIL' >				   
-            else < idle ; M:Machine ; QIL' >
-              fi,
-            QIL'']
-        else [nil, < idle ; M:Machine ; nil >,
-	    'BMaude: '\r 'Error 'while 'processing 'command '\o 'mc QIL1 '|= QIL2]
-        fi
-      if 
-	  P1:ResultPair? := metaParse(upModule('AMN-GRAMMAR, false), QIL1,
-	    'SubstitutionDecl) /\ 
-	  P2:ResultPair? := metaParse(makeMCModule(M:Machine), QIL2, 'Formula)
-	    /\ M:Machine =/= noMachine .
-
-    crl [dmc] : [('dmc QIL1 '|= QIL2), < idle ; M:Machine ; QIL' >, QIL''] =>
-      if ((P1:ResultPair? :: ResultPair) and (P2:ResultPair? :: ResultPair))
-        then [nil,
-          if processPreSubstitution(getTerm(P1:ResultPair?)) :: GSLSubstitution
-            then < dmc processPreSubstitution(getTerm(P1:ResultPair?)) 
 	      getTerm(P2:ResultPair?) ; M:Machine ; QIL' >
             else < idle ; M:Machine ; QIL' >
               fi,
@@ -2093,23 +2075,41 @@ mod BMAUDE-INTERFACE is
         else [nil, < idle ; M:Machine ; nil >,
 	    'BMaude: '\r 'Error 'while 'processing 'command '\o 'mc QIL1 '|= QIL2]
         fi
-      if 
+      if
+	  P1:ResultPair? := metaParse(upModule('AMN-GRAMMAR, false), QIL1,
+	    'SubstitutionDecl) /\
+	  P2:ResultPair? := metaParse(makeMCModule(M:Machine), QIL2, 'Formula)
+	    /\ M:Machine =/= noMachine .
+
+    crl [dmc] : [('dmc QIL1 '|= QIL2), < idle ; M:Machine ; QIL' >, QIL''] =>
+      if ((P1:ResultPair? :: ResultPair) and (P2:ResultPair? :: ResultPair))
+        then [nil,
+          if processPreSubstitution(getTerm(P1:ResultPair?)) :: GSLSubstitution
+            then < dmc processPreSubstitution(getTerm(P1:ResultPair?))
+	      getTerm(P2:ResultPair?) ; M:Machine ; QIL' >
+            else < idle ; M:Machine ; QIL' >
+              fi,
+            QIL'']
+        else [nil, < idle ; M:Machine ; nil >,
+	    'BMaude: '\r 'Error 'while 'processing 'command '\o 'mc QIL1 '|= QIL2]
+        fi
+      if
 	  P1:ResultPair? :=
-	     metaParse(upModule('AMN-GRAMMAR, false), QIL1, 'SubstitutionDecl) /\ 
+	     metaParse(upModule('AMN-GRAMMAR, false), QIL1, 'SubstitutionDecl) /\
 	  P2:ResultPair? :=
 	     metaParse(makeMCModule(M:Machine), QIL2, 'Formula)
 	  /\ M:Machine =/= noMachine .
 
     crl [search] : [('search Q:Qid QIL1 'where QIL2),
 	  < idle ; M:Machine ; QIL' >, QIL''] =>
-      if ((downTerm(getTerm(P1:ResultPair?), error) :: Nat) and 
-	    (P2:ResultPair? :: ResultPair) and 
+      if ((downTerm(getTerm(P1:ResultPair?), error) :: Nat) and
+	    (P2:ResultPair? :: ResultPair) and
 	    (P3:Condition? :: Condition))
         then [nil,
           if processPreSubstitution(getTerm(P2:ResultPair?)) :: GSLSubstitution
-	    then < search downTerm(getTerm(P1:ResultPair?), error)  
-	      processPreSubstitution(getTerm(P2:ResultPair?)) 
-	      P3:Condition? ; M:Machine ; QIL' > 				   
+	    then < search downTerm(getTerm(P1:ResultPair?), error)
+	      processPreSubstitution(getTerm(P2:ResultPair?))
+	      P3:Condition? ; M:Machine ; QIL' >
             else < idle ; M:Machine ; QIL' >
               fi,
             QIL'']
@@ -2117,11 +2117,11 @@ mod BMAUDE-INTERFACE is
 	    'BMaude: '\r 'Error 'while 'processing 'command '\o
 	    'search Q:Qid QIL1 'where QIL2 ]
         fi
-      if 
+      if
 	  P1:ResultPair? :=
 	     metaParse(upModule('NAT, false), Q:Qid, 'Nat) /\
 	  P2:ResultPair? :=
-	     metaParse(upModule('AMN-GRAMMAR, false), QIL1, 'SubstitutionDecl) /\ 
+	     metaParse(upModule('AMN-GRAMMAR, false), QIL1, 'SubstitutionDecl) /\
 	  P3:Condition? := parseSearchCondition(QIL2) .
 
     crl [exec-bounded] : [('dexecn Q:Qid QIL), < idle ; M:Machine ; QIL' >, QIL''] =>
@@ -2129,7 +2129,7 @@ mod BMAUDE-INTERFACE is
         then [nil,
           if (processPreSubstitution(getTerm(P2:ResultPair?)) :: GSLSubstitution and
 		downTerm(getTerm(P1:ResultPair?), error) :: Nat)
-            then < dexec downTerm(getTerm(P1:ResultPair?), error) 
+            then < dexec downTerm(getTerm(P1:ResultPair?), error)
 	      processPreSubstitution(getTerm(P2:ResultPair?)) ; M:Machine ; QIL' >
             else < idle ; M:Machine ; QIL' >
               fi,
@@ -2137,7 +2137,7 @@ mod BMAUDE-INTERFACE is
         else [nil, < idle ; M:Machine ; nil >,
 	    'BMaude: '\r 'Error 'while 'processing 'command '\o 'exec Q:Qid QIL ]
         fi
-      if 
+      if
 	  P1:ResultPair? := metaParse(upModule('NAT, false), Q:Qid, 'Nat) /\
 	  P2:ResultPair? := metaParse(upModule('AMN-GRAMMAR, false), QIL,
 	    'SubstitutionDecl) .
@@ -2147,7 +2147,7 @@ mod BMAUDE-INTERFACE is
         then [nil,
           if (processPreSubstitution(getTerm(P2:ResultPair?)) :: GSLSubstitution and
 		downTerm(getTerm(P1:ResultPair?), error) :: Nat)
-            then < exec downTerm(getTerm(P1:ResultPair?), error) 
+            then < exec downTerm(getTerm(P1:ResultPair?), error)
 	      processPreSubstitution(getTerm(P2:ResultPair?)) ; M:Machine ; QIL' >
             else < idle ; M:Machine ; QIL' >
               fi,
@@ -2155,7 +2155,7 @@ mod BMAUDE-INTERFACE is
         else [nil, < idle ; M:Machine ; nil >,
 	    'BMaude: '\r 'Error 'while 'processing 'command '\o 'exec '\s Q:Qid '\s QIL ]
         fi
-      if 
+      if
 	  P1:ResultPair? := metaParse(upModule('NAT, false), Q:Qid, 'Nat) /\
 	  P2:ResultPair? := metaParse(upModule('AMN-GRAMMAR, false), QIL,
 	    'SubstitutionDecl) .
@@ -2163,7 +2163,7 @@ mod BMAUDE-INTERFACE is
     crl [dexec-unbounded] : [('dexec QIL), < idle ; M:Machine ; QIL' >, QIL''] =>
       if P:ResultPair? :: ResultPair
         then [nil,
-          if processPreSubstitution(getTerm(P:ResultPair?)) :: GSLSubstitution 
+          if processPreSubstitution(getTerm(P:ResultPair?)) :: GSLSubstitution
             then < dexec processPreSubstitution(getTerm(P:ResultPair?)) ;
 	      M:Machine ; QIL' >
             else < idle ; M:Machine ; QIL' >
@@ -2178,7 +2178,7 @@ mod BMAUDE-INTERFACE is
     crl [exec-unbounded] : [('exec QIL), < idle ; M:Machine ; QIL' >, QIL''] =>
       if P:ResultPair? :: ResultPair
         then [nil,
-          if processPreSubstitution(getTerm(P:ResultPair?)) :: GSLSubstitution 
+          if processPreSubstitution(getTerm(P:ResultPair?)) :: GSLSubstitution
             then < exec processPreSubstitution(getTerm(P:ResultPair?)) ; M:Machine ; QIL' >
             else < idle ; M:Machine ; QIL' >
               fi,
@@ -2190,13 +2190,13 @@ mod BMAUDE-INTERFACE is
 	  metaParse(upModule('AMN-GRAMMAR, false), QIL, 'SubstitutionDecl) .
 
     crl [sexec] : [('sexec Q:Qid QIL1), < idle ; M:Machine ; QIL' >, QIL''] =>
-      if ((downTerm(getTerm(P1:ResultPair?), error) :: Nat) and 
+      if ((downTerm(getTerm(P1:ResultPair?), error) :: Nat) and
 	    (P2:ResultPair? :: ResultPair))
         then [nil,
-          if processPreSubstitution(getTerm(P2:ResultPair?)) :: GSLSubstitution      
-            then < narrow downTerm(getTerm(P1:ResultPair?), error)  
-	      processPreSubstitution(getTerm(P2:ResultPair?)) ; 
-	      M:Machine ; QIL' >							   
+          if processPreSubstitution(getTerm(P2:ResultPair?)) :: GSLSubstitution
+            then < narrow downTerm(getTerm(P1:ResultPair?), error)
+	      processPreSubstitution(getTerm(P2:ResultPair?)) ;
+	      M:Machine ; QIL' >
             else < idle ; M:Machine ; QIL' >
               fi,
             QIL'']
@@ -2204,7 +2204,7 @@ mod BMAUDE-INTERFACE is
 	    'BMaude: '\r 'Error 'while 'processing 'command '\o
 	    'symexec '\s Q:Qid '\s QIL1]
         fi
-      if 
+      if
 	  P1:ResultPair? := metaParse(upModule('NAT, false), Q:Qid, 'Nat) /\
 	  P2:ResultPair? := metaParse(upModule('AMN-GRAMMAR, false), QIL1,
 	    'SubstitutionDecl) .

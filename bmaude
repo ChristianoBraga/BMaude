@@ -1,6 +1,6 @@
 #!/bin/bash
 
-MAUDE="/Users/cbraga/Applications/maudeAlpha115/maude-Yices2.darwin64"
+MAUDE="/Users/cbraga/Applications/Alpha115/maude-Yices2.darwin64"
 BMAUDE_DIR="/Users/cbraga/Dropbox/BMaude-project/urucu-amarela/"
 
 if [ "$1" = "demo" ]; then

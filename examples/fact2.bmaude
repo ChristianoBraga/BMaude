@@ -12,7 +12,6 @@
      ELSE print(y)
      END
 END)
-eof
 (view)
 (say o What the hell: let's execute fact(1000)!)
 (exec fact(1000))
