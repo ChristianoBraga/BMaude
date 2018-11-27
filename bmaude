@@ -3,6 +3,17 @@
 MAUDE="/Users/cbraga/Applications/Alpha115/maude-Yices2.darwin64"
 BMAUDE_DIR="/Users/cbraga/Dropbox/BMaude-project/urucu-amarela/"
 
+if [ ! -x $MAUDE ]; then
+    echo "$MAUDE does not exist or is not executable."
+    echo "Please set the environment variable MAUDE."
+    exit 1
+fi
+
+if [ ! -d "${BMAUDE_DIR}" ]; then
+    echo "Please set BMAUDE_DIR to your local BMaude installation."
+    exit 1
+fi
+
 if [ "$1" = "demo" ]; then
    $MAUDE -no-banner $BMAUDE_DIR/bmaude-no-banner.maude demo/demo.bmaude | less -R
 else
