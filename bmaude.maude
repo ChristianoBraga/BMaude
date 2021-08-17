@@ -2227,7 +2227,7 @@ set trace condition off .
 set trace substitution off .
 set trace whole off .
 set trace body off .
-set trace builtin off .
-set print conceal off .
+set trace builtin on .
+set print conceal on .
 --- From BPLC
 print conceal abs prc if choice loop .

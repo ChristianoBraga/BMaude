@@ -1,7 +1,7 @@
 #!/bin/bash
 
-MAUDE="/Users/cbraga/Applications/Alpha115/maude-Yices2.darwin64"
-BMAUDE_DIR="/Users/cbraga/Dropbox/BMaude-project/urucu-amarela/"
+BMAUDE_DIR="/Users/cbraga/GDrive/BMaude-project/urucu-amarela/"
+MAUDE=$BMAUDE_DIR/MaudeAlpha115/maude.darwin64
 
 if [ ! -x $MAUDE ]; then
     echo "$MAUDE does not exist or is not executable."
